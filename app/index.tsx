@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import {
   Image,
   ImageBackground,
+  ImageStyle,
   ScrollView,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import { AdminDashboard } from "../components/admin/AdminDashboard";
 import { LoginForm } from "../components/auth/LoginForm";
@@ -25,6 +28,8 @@ type PageType =
   | "login"
   | "homeowner-dashboard"
   | "submit-request"
+  | "request-detail"
+  | "chat"
   | "admin-dashboard";
 
 export default function MaintenanceApp() {
@@ -154,7 +159,7 @@ export default function MaintenanceApp() {
             />
             <Button
               title="Submit Request"
-              onPress={() => setCurrentPage("homeowner-dashboard")}
+              onPress={() => setCurrentPage("request-detail")}
               variant="accent"
             />
           </View>
@@ -167,6 +172,171 @@ export default function MaintenanceApp() {
             if (tab === "home") setCurrentPage("homeowner-dashboard");
           }}
         />
+      </View>
+    );
+  }
+
+  // Request Detail Page
+  if (currentPage === "request-detail") {
+    return (
+      <View style={styles.dashboardContainer}>
+        {/* Header */}
+        <View style={styles.submitHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("homeowner-dashboard")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.submitHeaderTitle}>Request Detail</Text>
+        </View>
+
+        {/* Request Detail Card */}
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.detailContainer}>
+            <View style={styles.detailCard}>
+              <View style={styles.detailSection}>
+                <Text style={styles.detailLabel}>Electrical</Text>
+                <Text style={styles.detailSubtext}>Living Room</Text>
+              </View>
+
+              <View style={styles.detailDivider} />
+
+              <View style={styles.detailSection}>
+                <Text style={styles.detailTitle}>Require</Text>
+                <Text style={styles.detailValue}>123456</Text>
+              </View>
+
+              <View style={styles.detailDivider} />
+
+              <View style={styles.detailSection}>
+                <Text style={styles.detailTitle}>Status</Text>
+                <View style={styles.statusRow}>
+                  <View style={styles.statusDot} />
+                  <Text style={styles.statusText}>Pending</Text>
+                </View>
+              </View>
+
+              <Button
+                title="Chat"
+                onPress={() => setCurrentPage("chat")}
+                variant="accent"
+                style={styles.chatButton}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Chat Page
+  if (currentPage === "chat") {
+    return (
+      <View style={styles.dashboardContainer}>
+        {/* Header */}
+        <View style={styles.submitHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("request-detail")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.submitHeaderTitle}>Chat</Text>
+        </View>
+
+        {/* Chat Messages */}
+        <ScrollView style={styles.chatContainer}>
+          {/* Homeowner Message 1 */}
+          <View style={styles.messageGroup}>
+            <View style={styles.messageHeader}>
+              <Image
+                source={{
+                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+                }}
+                style={styles.messageAvatar}
+              />
+              <Text style={styles.messageSender}>Homeowner</Text>
+            </View>
+            <View style={styles.messageLeft}>
+              <View style={styles.messageBubbleLeft}>
+                <Text style={styles.messageTextLeft}>
+                  I submitted a maintenance request for the living room.
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Admin Message 1 */}
+          <View style={styles.messageGroup}>
+            <View style={[styles.messageHeader, styles.messageHeaderRight]}>
+              <Text style={styles.messageSender}>Admin</Text>
+              <Image
+                source={{
+                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+                }}
+                style={styles.messageAvatar}
+              />
+            </View>
+            <View style={styles.messageRight}>
+              <View style={styles.messageBubbleRight}>
+                <Text style={styles.messageTextRight}>
+                  I've received your request and will take a look as soon as
+                  possible.
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Homeowner Message 2 */}
+          <View style={styles.messageGroup}>
+            <View style={styles.messageHeader}>
+              <Image
+                source={{
+                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+                }}
+                style={styles.messageAvatar}
+              />
+              <Text style={styles.messageSender}>Homeowner</Text>
+            </View>
+            <View style={styles.messageLeft}>
+              <View style={styles.messageBubbleLeft}>
+                <Text style={styles.messageTextLeft}>Thank you!</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Admin Message 2 */}
+          <View style={styles.messageGroup}>
+            <View style={[styles.messageHeader, styles.messageHeaderRight]}>
+              <Text style={styles.messageSender}>Admin</Text>
+              <Image
+                source={{
+                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+                }}
+                style={styles.messageAvatar}
+              />
+            </View>
+            <View style={styles.messageRight}>
+              <View style={styles.messageBubbleRight}>
+                <Text style={styles.messageTextRight}>
+                  I've fixed the issue. Please check if the lights are still
+                  flickering.
+                </Text>
+              </View>
+              <Text style={styles.messageTimestamp}>Delivered on Thursday</Text>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Continue Button */}
+        <View style={styles.chatFooter}>
+          <Button
+            title="Continue"
+            onPress={() => setCurrentPage("homeowner-dashboard")}
+            variant="accent"
+          />
+        </View>
       </View>
     );
   }
@@ -185,63 +355,63 @@ const styles = StyleSheet.create({
   dashboardContainer: {
     flex: 1,
     backgroundColor: colors.background,
-  },
+  } as ViewStyle,
   scrollView: {
     flex: 1,
-  },
+  } as ViewStyle,
   scrollContent: {
     paddingBottom: 100,
-  },
+  } as ViewStyle,
   dashboardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: spacing.xl,
     backgroundColor: colors.white,
-  },
+  } as ViewStyle,
   welcomeBack: {
     fontSize: 14,
     color: colors.text.secondary,
-  },
+  } as TextStyle,
   userName: {
     fontSize: 24,
     fontWeight: "bold",
     color: colors.text.primary,
     marginTop: 4,
-  },
+  } as TextStyle,
   dateText: {
     fontSize: 12,
     color: colors.text.tertiary,
     marginTop: 4,
-  },
+  } as TextStyle,
   profilePic: {
     width: 50,
     height: 50,
     borderRadius: 25,
     overflow: "hidden",
-  },
+  } as ViewStyle,
   profileImage: {
     width: "100%",
     height: "100%",
-  },
+  } as ImageStyle,
   heroBanner: {
     margin: spacing.xl,
     height: 200,
     borderRadius: borderRadius.lg,
     backgroundColor: colors.secondary,
     overflow: "hidden",
-  },
+  } as ViewStyle,
   bannerOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.overlayLight,
-  },
+  } as ViewStyle,
   bannerContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: spacing.xl,
     zIndex: 2,
-  },
+  } as ViewStyle,
   bannerTitle: {
     fontSize: 16,
     fontWeight: "bold",
@@ -249,50 +419,50 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 2,
     marginBottom: spacing.sm,
-  },
+  } as TextStyle,
   bannerSubtitle: {
     fontSize: 14,
     color: colors.white,
     marginBottom: 4,
-  },
+  } as TextStyle,
   bannerQuick: {
     fontSize: 24,
     fontWeight: "bold",
     color: colors.category.electrical,
     letterSpacing: 2,
     marginBottom: spacing.lg,
-  },
+  } as TextStyle,
   submitButton: {
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.xxxl,
-  },
+  } as ViewStyle,
   activeRequestsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: spacing.xl,
-  },
+  } as ViewStyle,
   activeRequestsTitle: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-  },
+  } as ViewStyle,
   checkIcon: {
     fontSize: 20,
-  },
+  } as TextStyle,
   activeText: {
     fontSize: 16,
     fontWeight: "bold",
     color: colors.text.primary,
-  },
+  } as TextStyle,
   viewHistory: {
     fontSize: 14,
     color: colors.text.secondary,
-  },
+  } as TextStyle,
   requestsContainer: {
     paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
-  },
+  } as ViewStyle,
   submitHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -302,28 +472,164 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     gap: spacing.lg,
-  },
+  } as ViewStyle,
   backButton: {
     padding: spacing.sm,
-  },
+  } as ViewStyle,
   backIcon: {
     fontSize: 24,
     color: colors.text.primary,
-  },
+  } as TextStyle,
   submitHeaderTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: colors.text.primary,
-  },
+  } as TextStyle,
   submitForm: {
     padding: spacing.xxl,
     paddingHorizontal: spacing.xl,
-  },
+  } as ViewStyle,
   submitInput: {
     marginBottom: spacing.xl,
-  },
+  } as TextStyle,
   submitTextarea: {
     minHeight: 100,
     marginBottom: spacing.xl,
-  },
+  } as TextStyle,
+  detailContainer: {
+    padding: spacing.xl,
+  } as ViewStyle,
+  detailCard: {
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.xl,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  } as ViewStyle,
+  detailSection: {
+    marginBottom: spacing.lg,
+  } as ViewStyle,
+  detailLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  } as TextStyle,
+  detailSubtext: {
+    fontSize: 14,
+    color: colors.text.secondary,
+  } as TextStyle,
+  detailDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.lg,
+  } as ViewStyle,
+  detailTitle: {
+    fontSize: 14,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
+  } as TextStyle,
+  detailValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.text.primary,
+  } as TextStyle,
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  } as ViewStyle,
+  statusDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.status.pending.bg,
+  } as ViewStyle,
+  statusText: {
+    fontSize: 16,
+    color: colors.text.primary,
+    fontWeight: "600",
+  } as TextStyle,
+  chatButton: {
+    marginTop: spacing.xl,
+  } as ViewStyle,
+  chatContainer: {
+    flex: 1,
+    padding: spacing.xl,
+    backgroundColor: colors.background,
+  } as ViewStyle,
+  messageGroup: {
+    marginBottom: spacing.xl,
+  } as ViewStyle,
+  messageHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  } as ViewStyle,
+  messageHeaderRight: {
+    justifyContent: "flex-end",
+  } as ViewStyle,
+  messageAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  } as ImageStyle,
+  messageSender: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.text.primary,
+  } as TextStyle,
+  messageLeft: {
+    alignItems: "flex-start",
+  } as ViewStyle,
+  messageRight: {
+    alignItems: "flex-end",
+  } as ViewStyle,
+  messageBubbleLeft: {
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    maxWidth: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  } as ViewStyle,
+  messageBubbleRight: {
+    backgroundColor: colors.secondary,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    maxWidth: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  } as ViewStyle,
+  messageTextLeft: {
+    fontSize: 14,
+    color: colors.text.primary,
+    lineHeight: 20,
+  } as TextStyle,
+  messageTextRight: {
+    fontSize: 14,
+    color: colors.white,
+    lineHeight: 20,
+  } as TextStyle,
+  messageTimestamp: {
+    fontSize: 12,
+    color: colors.text.tertiary,
+    marginTop: spacing.xs,
+  } as TextStyle,
+  chatFooter: {
+    padding: spacing.xl,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  } as ViewStyle,
 });
