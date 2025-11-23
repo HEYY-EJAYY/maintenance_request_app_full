@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { colors, spacing } from "../../config/theme";
 import { Button } from "../common/Button";
 
@@ -10,7 +10,11 @@ interface SplashScreenProps {
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.backgroundImage}>
+      <ImageBackground
+        source={require("../../assets/images/camella.jpeg")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
         <View style={styles.overlay} />
 
         <View style={styles.logoContainer}>
@@ -35,7 +39,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted }) => {
             variant="primary"
           />
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };

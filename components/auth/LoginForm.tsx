@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -29,7 +30,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       style={styles.container}
       contentContainerStyle={styles.scrollContent}
     >
-      <View style={styles.loginBackground}>
+      <ImageBackground
+        source={require("../../assets/images/camella.jpeg")}
+        style={styles.loginBackground}
+        resizeMode="cover"
+      >
         <View style={styles.overlay} />
 
         <View style={styles.loginHeader}>
@@ -114,7 +119,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </ScrollView>
   );
 };
