@@ -9,47 +9,39 @@ interface SplashScreenProps {
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted }) => {
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/images/camella.jpeg")}
-        style={styles.backgroundImage}
-        resizeMode="cover"
-      >
-        <View style={styles.overlay} />
+    <ImageBackground
+      source={require("../../assets/images/camella.jpeg")}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay} />
 
-        <View style={styles.logoContainer}>
-          <View style={styles.logoTriangle} />
-          <View style={styles.logoContent}>
-            <Text style={styles.logoIcon}>👑</Text>
-            <Text style={styles.logoText}>Camella</Text>
-            <Text style={styles.logoSubtext}>PRIMA BUTUAN</Text>
-          </View>
+      <View style={styles.logoContainer}>
+        <View style={styles.logoTriangle} />
+        <View style={styles.logoContent}>
+          <Text style={styles.logoIcon}>👑</Text>
+          <Text style={styles.logoText}>Camella</Text>
+          <Text style={styles.logoSubtext}>PRIMA BUTUAN</Text>
         </View>
+      </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>MAINTENANCE</Text>
-          <Text style={styles.title}>REQUESTS AND</Text>
-          <Text style={styles.title}>TRACKING</Text>
-        </View>
+      <View style={styles.content}>
+        <Text style={styles.title}>MAINTENANCE</Text>
+        <Text style={styles.title}>REQUESTS AND</Text>
+        <Text style={styles.title}>TRACKING</Text>
+      </View>
 
-        <View style={styles.bottomSection}>
-          <Button
-            title="GET STARTED"
-            onPress={onGetStarted}
-            variant="primary"
-          />
-        </View>
-      </ImageBackground>
-    </View>
+      <View style={styles.bottomSection}>
+        <Button title="GET STARTED" onPress={onGetStarted} variant="primary" />
+      </View>
+    </ImageBackground>
   );
 };
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   backgroundImage: {
     flex: 1,
+    width: "100%",
+    height: "100%",
     backgroundColor: colors.secondary,
   },
   overlay: {

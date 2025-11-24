@@ -14,9 +14,13 @@ import { Input } from "../common/Input";
 
 interface LoginFormProps {
   onLogin: (role: UserRole) => void;
+  onSignUpPress: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({
+  onLogin,
+  onSignUpPress,
+}) => {
   const [activeTab, setActiveTab] = useState<UserRole>("homeowner");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,17 +30,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.scrollContent}
+    <ImageBackground
+      source={require("../../assets/images/camella.jpeg")}
+      style={styles.loginBackground}
+      resizeMode="cover"
     >
-      <ImageBackground
-        source={require("../../assets/images/camella.jpeg")}
-        style={styles.loginBackground}
-        resizeMode="cover"
-      >
-        <View style={styles.overlay} />
+      <View style={styles.overlay} />
 
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.loginHeader}>
           <Text style={styles.headerTitle}>PRIMA CAMELLA</Text>
           <Text style={styles.headerSubtitle}>BUTUAN</Text>
@@ -113,31 +118,32 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
             <View style={styles.signupTextContainer}>
               <Text style={styles.signupText}>Don't have an account? </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={onSignUpPress}>
                 <Text style={styles.signupLink}>Sign Up</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </ImageBackground>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 };
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
   loginBackground: {
     flex: 1,
+    width: "100%",
+    minHeight: "100%",
     backgroundColor: colors.secondary,
+  },
+  scrollContainer: {
+    flex: 1,
+    width: "100%",
+  },
+  scrollContent: {
     alignItems: "center",
     paddingTop: 40,
     paddingHorizontal: spacing.xl,
-    minHeight: "100%",
+    paddingBottom: 40,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,

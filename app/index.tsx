@@ -14,6 +14,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { AdminDashboard } from "../components/admin/AdminDashboard";
 import { LoginForm } from "../components/auth/LoginForm";
+import { SignUpForm } from "../components/auth/SignUpForm";
 import { SplashScreen } from "../components/auth/SplashScreen";
 import { BottomNavigation } from "../components/common/BottomNavigation";
 import { Button } from "../components/common/Button";
@@ -27,6 +28,7 @@ import { MOCK_REQUESTS } from "../utils/constants";
 type PageType =
   | "splash"
   | "login"
+  | "signup"
   | "homeowner-dashboard"
   | "submit-request"
   | "request-detail"
@@ -98,7 +100,21 @@ export default function MaintenanceApp() {
   }
 
   if (currentPage === "login") {
-    return <LoginForm onLogin={handleLogin} />;
+    return (
+      <LoginForm
+        onLogin={handleLogin}
+        onSignUpPress={() => setCurrentPage("signup")}
+      />
+    );
+  }
+
+  if (currentPage === "signup") {
+    return (
+      <SignUpForm
+        onSignUp={() => setCurrentPage("login")}
+        onBackToLogin={() => setCurrentPage("login")}
+      />
+    );
   }
 
   // Homeowner Dashboard
@@ -385,6 +401,12 @@ export default function MaintenanceApp() {
               <Icon name="send" size={24} color={colors.white} />
             </TouchableOpacity>
           </View>
+          <Button
+            title="Continue"
+            onPress={() => setCurrentPage("technical-issue")}
+            variant="accent"
+            style={styles.continueButton}
+          />
         </View>
 
         {/* Bottom Navigation */}
@@ -926,6 +948,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
+  } as ViewStyle,
+  continueButton: {
+    marginTop: spacing.md,
   } as ViewStyle,
   technicalContainer: {
     padding: spacing.xl,
