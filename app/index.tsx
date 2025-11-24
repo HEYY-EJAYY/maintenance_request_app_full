@@ -424,35 +424,47 @@ export default function MaintenanceApp() {
 
         {/* Notifications List */}
         <ScrollView style={styles.notificationsList}>
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>Completed Request</Text>
-            <Text style={styles.notificationTime}>Just now</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>Completed Request</Text>
+              <Text style={styles.notificationTime}>Just now</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>Pending Request</Text>
-            <Text style={styles.notificationTime}>1 hr ago</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>Pending Request</Text>
+              <Text style={styles.notificationTime}>1 hr ago</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>Pending Request</Text>
-            <Text style={styles.notificationTime}>2 hrs ago</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>Pending Request</Text>
+              <Text style={styles.notificationTime}>2 hrs ago</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>In progress Request</Text>
-            <Text style={styles.notificationTime}>4 hrs ago</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>In progress Request</Text>
+              <Text style={styles.notificationTime}>4 hrs ago</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>Completed Request</Text>
-            <Text style={styles.notificationTime}>1 day ago</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>Completed Request</Text>
+              <Text style={styles.notificationTime}>1 day ago</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationItem}>
-            <Text style={styles.notificationText}>Completed Request</Text>
-            <Text style={styles.notificationTime}>2 days ago</Text>
-          </TouchableOpacity>
+          <View style={styles.notificationCard}>
+            <TouchableOpacity style={styles.notificationItem}>
+              <Text style={styles.notificationText}>Completed Request</Text>
+              <Text style={styles.notificationTime}>2 days ago</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
     );
@@ -812,42 +824,51 @@ const styles = StyleSheet.create({
   notificationHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.lg,
-    padding: spacing.xl,
+    gap: 16,
+    padding: 16,
+    paddingHorizontal: 20,
     backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: "#e5e5e5",
   } as ViewStyle,
   notificationTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    color: colors.text.primary,
-    marginBottom: spacing.xs,
+    color: "#333",
   } as TextStyle,
   notificationDate: {
     fontSize: 12,
-    color: colors.text.tertiary,
+    color: "#999",
+    marginTop: 2,
   } as TextStyle,
   notificationsList: {
     flex: 1,
-    backgroundColor: colors.background,
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+  } as ViewStyle,
+  notificationCard: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
   } as ViewStyle,
   notificationItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: spacing.lg,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    padding: 16,
   } as ViewStyle,
   notificationText: {
-    fontSize: 16,
-    color: colors.text.primary,
+    fontSize: 15,
+    color: "#333",
     fontWeight: "500",
   } as TextStyle,
   notificationTime: {
-    fontSize: 14,
-    color: colors.text.secondary,
+    fontSize: 13,
+    color: "#999",
   } as TextStyle,
 });
