@@ -11,6 +11,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { AdminDashboard } from "../components/admin/AdminDashboard";
 import { LoginForm } from "../components/auth/LoginForm";
 import { SplashScreen } from "../components/auth/SplashScreen";
@@ -32,10 +33,57 @@ type PageType =
   | "chat"
   | "technical-issue"
   | "notifications"
+  | "profile"
   | "admin-dashboard";
 
 export default function MaintenanceApp() {
   const [currentPage, setCurrentPage] = useState<PageType>("splash");
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: "Homeowner",
+      text: "I submitted a maintenance request for the living room.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+      isHomeowner: true,
+    },
+    {
+      id: 2,
+      sender: "Admin",
+      text: "I've received your request and will take a look as soon as possible.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+      isHomeowner: false,
+    },
+    {
+      id: 3,
+      sender: "Homeowner",
+      text: "Thank you!",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+      isHomeowner: true,
+    },
+    {
+      id: 4,
+      sender: "Admin",
+      text: "I've fixed the issue. Please check if the lights are still flickering.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+      isHomeowner: false,
+      timestamp: "Delivered on Thursday",
+    },
+  ]);
+  const [messageInput, setMessageInput] = useState("");
+
+  const handleSendMessage = () => {
+    if (messageInput.trim()) {
+      const newMessage = {
+        id: messages.length + 1,
+        sender: "Homeowner",
+        text: messageInput,
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+        isHomeowner: true,
+      };
+      setMessages([...messages, newMessage]);
+      setMessageInput("");
+    }
+  };
 
   const handleLogin = (role: UserRole) => {
     if (role === "homeowner") {
@@ -69,12 +117,9 @@ export default function MaintenanceApp() {
               <Text style={styles.dateText}>Tuesday, January 14, 2025</Text>
             </View>
             <View style={styles.profilePic}>
-              <Image
-                source={{
-                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
-                }}
-                style={styles.profileImage}
-              />
+              <TouchableOpacity onPress={() => setCurrentPage("profile")}>
+                <Icon name="account-circle" size={50} color="#555" />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -266,95 +311,80 @@ export default function MaintenanceApp() {
 
         {/* Chat Messages */}
         <ScrollView style={styles.chatContainer}>
-          {/* Homeowner Message 1 */}
-          <View style={styles.messageGroup}>
-            <View style={styles.messageHeader}>
-              <Image
-                source={{
-                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
-                }}
-                style={styles.messageAvatar}
-              />
-              <Text style={styles.messageSender}>Homeowner</Text>
-            </View>
-            <View style={styles.messageLeft}>
-              <View style={styles.messageBubbleLeft}>
-                <Text style={styles.messageTextLeft}>
-                  I submitted a maintenance request for the living room.
-                </Text>
+          {messages.map((message) => (
+            <View key={message.id} style={styles.messageGroup}>
+              <View
+                style={[
+                  styles.messageHeader,
+                  !message.isHomeowner && styles.messageHeaderRight,
+                ]}
+              >
+                {message.isHomeowner ? (
+                  <>
+                    <Image
+                      source={{ uri: message.avatar }}
+                      style={styles.messageAvatar}
+                    />
+                    <Text style={styles.messageSender}>{message.sender}</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.messageSender}>{message.sender}</Text>
+                    <Image
+                      source={{ uri: message.avatar }}
+                      style={styles.messageAvatar}
+                    />
+                  </>
+                )}
+              </View>
+              <View
+                style={
+                  message.isHomeowner ? styles.messageLeft : styles.messageRight
+                }
+              >
+                <View
+                  style={
+                    message.isHomeowner
+                      ? styles.messageBubbleLeft
+                      : styles.messageBubbleRight
+                  }
+                >
+                  <Text
+                    style={
+                      message.isHomeowner
+                        ? styles.messageTextLeft
+                        : styles.messageTextRight
+                    }
+                  >
+                    {message.text}
+                  </Text>
+                </View>
+                {message.timestamp && (
+                  <Text style={styles.messageTimestamp}>
+                    {message.timestamp}
+                  </Text>
+                )}
               </View>
             </View>
-          </View>
-
-          {/* Admin Message 1 */}
-          <View style={styles.messageGroup}>
-            <View style={[styles.messageHeader, styles.messageHeaderRight]}>
-              <Text style={styles.messageSender}>Admin</Text>
-              <Image
-                source={{
-                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-                }}
-                style={styles.messageAvatar}
-              />
-            </View>
-            <View style={styles.messageRight}>
-              <View style={styles.messageBubbleRight}>
-                <Text style={styles.messageTextRight}>
-                  I've received your request and will take a look as soon as
-                  possible.
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Homeowner Message 2 */}
-          <View style={styles.messageGroup}>
-            <View style={styles.messageHeader}>
-              <Image
-                source={{
-                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
-                }}
-                style={styles.messageAvatar}
-              />
-              <Text style={styles.messageSender}>Homeowner</Text>
-            </View>
-            <View style={styles.messageLeft}>
-              <View style={styles.messageBubbleLeft}>
-                <Text style={styles.messageTextLeft}>Thank you!</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Admin Message 2 */}
-          <View style={styles.messageGroup}>
-            <View style={[styles.messageHeader, styles.messageHeaderRight]}>
-              <Text style={styles.messageSender}>Admin</Text>
-              <Image
-                source={{
-                  uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-                }}
-                style={styles.messageAvatar}
-              />
-            </View>
-            <View style={styles.messageRight}>
-              <View style={styles.messageBubbleRight}>
-                <Text style={styles.messageTextRight}>
-                  I've fixed the issue. Please check if the lights are still
-                  flickering.
-                </Text>
-              </View>
-              <Text style={styles.messageTimestamp}>Delivered on Thursday</Text>
-            </View>
-          </View>
+          ))}
         </ScrollView>
 
-        {/* Continue Button */}
+        {/* Message Input */}
         <View style={styles.chatFooter}>
-          <Button
-            title="Continue"
-            onPress={() => setCurrentPage("technical-issue")}
-            variant="accent"
-          />
+          <View style={styles.messageInputContainer}>
+            <Input
+              placeholder="Type a message..."
+              value={messageInput}
+              onChangeText={setMessageInput}
+              style={styles.messageInput}
+            />
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={handleSendMessage}
+            >
+              <Icon name="send" size={24} color={colors.white} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Bottom Navigation */}
@@ -507,6 +537,83 @@ export default function MaintenanceApp() {
             if (tab === "request-detail") setCurrentPage("submit-request");
           }}
         />
+      </View>
+    );
+  }
+
+  // Profile Page
+  if (currentPage === "profile") {
+    return (
+      <View style={styles.dashboardContainer}>
+        {/* Header */}
+        <View style={styles.submitHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("homeowner-dashboard")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.submitHeaderTitle}>Profile</Text>
+        </View>
+
+        {/* Profile Content */}
+        <ScrollView style={styles.profileContainer}>
+          {/* Profile Avatar Section */}
+          <View style={styles.profileAvatarSection}>
+            <Image
+              source={{
+                uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jerrianne",
+              }}
+              style={styles.profileAvatarLarge}
+            />
+            <Text style={styles.profileRole}>Homeowner</Text>
+          </View>
+
+          {/* Profile Info Card */}
+          <View style={styles.profileCard}>
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Name :</Text>
+              <View style={styles.profileFieldValueContainer}>
+                <Text style={styles.profileFieldValue}>
+                  Jerrianne Kent Alejandria
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Email :</Text>
+              <View style={styles.profileFieldValueContainer}>
+                <Text style={styles.profileFieldValue}>
+                  Jerrianne03@gmail.com
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Address :</Text>
+              <View style={styles.profileFieldValueContainer}>
+                <Text style={styles.profileFieldValue}>
+                  Butuan City, Philippines
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Phone:</Text>
+              <View style={styles.profileFieldValueContainer}>
+                <Text style={styles.profileFieldValue}>09639147380</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => setCurrentPage("login")}
+          >
+            <Text style={styles.logoutButtonText}>Log out</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     );
   }
@@ -803,6 +910,23 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     paddingBottom: 80,
   } as ViewStyle,
+  messageInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  } as ViewStyle,
+  messageInput: {
+    flex: 1,
+    marginBottom: 0,
+  } as TextStyle,
+  sendButton: {
+    backgroundColor: colors.accent,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  } as ViewStyle,
   technicalContainer: {
     padding: spacing.xl,
   } as ViewStyle,
@@ -912,5 +1036,70 @@ const styles = StyleSheet.create({
   notificationTime: {
     fontSize: 13,
     color: "#999",
+  } as TextStyle,
+  profileContainer: {
+    flex: 1,
+    padding: spacing.xl,
+    paddingHorizontal: 20,
+    backgroundColor: colors.background,
+  } as ViewStyle,
+  profileAvatarSection: {
+    alignItems: "center",
+    marginBottom: spacing.xl,
+  } as ViewStyle,
+  profileAvatarLarge: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 12,
+  } as ImageStyle,
+  profileRole: {
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "500",
+  } as TextStyle,
+  profileCard: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom: spacing.xl,
+  } as ViewStyle,
+  profileField: {
+    marginBottom: 20,
+  } as ViewStyle,
+  profileFieldLabel: {
+    fontSize: 13,
+    color: "#666",
+    marginBottom: 6,
+  } as TextStyle,
+  profileFieldValueContainer: {
+    padding: 12,
+    backgroundColor: "#f9fafb",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  } as ViewStyle,
+  profileFieldValue: {
+    fontSize: 15,
+    color: "#333",
+    fontWeight: "500",
+  } as TextStyle,
+  logoutButton: {
+    width: "100%",
+    padding: 14,
+    backgroundColor: colors.accent,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: spacing.xxl,
+  } as ViewStyle,
+  logoutButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.white,
   } as TextStyle,
 });
