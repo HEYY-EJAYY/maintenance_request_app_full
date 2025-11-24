@@ -23,7 +23,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => onTabPress?.("requests")}
+        onPress={() => onTabPress?.("request-detail")}
       >
         <Text
           style={[styles.icon, activeTab === "requests" && styles.activeIcon]}

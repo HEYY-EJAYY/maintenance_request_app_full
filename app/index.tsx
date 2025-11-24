@@ -131,6 +131,7 @@ export default function MaintenanceApp() {
           activeTab="home"
           onTabPress={(tab) => {
             if (tab === "notifications") setCurrentPage("notifications");
+            if (tab === "request-detail") setCurrentPage("submit-request");
           }}
         />
       </View>
