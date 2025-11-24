@@ -235,6 +235,16 @@ export default function MaintenanceApp() {
             </View>
           </View>
         </ScrollView>
+
+        {/* Bottom Navigation */}
+        <BottomNavigation
+          activeTab="home"
+          onTabPress={(tab) => {
+            if (tab === "home") setCurrentPage("homeowner-dashboard");
+            if (tab === "request-detail") setCurrentPage("submit-request");
+            if (tab === "notifications") setCurrentPage("notifications");
+          }}
+        />
       </View>
     );
   }
@@ -346,6 +356,16 @@ export default function MaintenanceApp() {
             variant="accent"
           />
         </View>
+
+        {/* Bottom Navigation */}
+        <BottomNavigation
+          activeTab="home"
+          onTabPress={(tab) => {
+            if (tab === "home") setCurrentPage("homeowner-dashboard");
+            if (tab === "request-detail") setCurrentPage("submit-request");
+            if (tab === "notifications") setCurrentPage("notifications");
+          }}
+        />
       </View>
     );
   }
@@ -400,6 +420,16 @@ export default function MaintenanceApp() {
             </View>
           </View>
         </ScrollView>
+
+        {/* Bottom Navigation */}
+        <BottomNavigation
+          activeTab="home"
+          onTabPress={(tab) => {
+            if (tab === "home") setCurrentPage("homeowner-dashboard");
+            if (tab === "request-detail") setCurrentPage("submit-request");
+            if (tab === "notifications") setCurrentPage("notifications");
+          }}
+        />
       </View>
     );
   }
@@ -771,6 +801,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.border,
+    paddingBottom: 80,
   } as ViewStyle,
   technicalContainer: {
     padding: spacing.xl,
