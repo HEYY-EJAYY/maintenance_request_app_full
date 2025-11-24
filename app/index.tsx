@@ -31,6 +31,7 @@ type PageType =
   | "request-detail"
   | "chat"
   | "technical-issue"
+  | "notifications"
   | "admin-dashboard";
 
 export default function MaintenanceApp() {
@@ -126,7 +127,12 @@ export default function MaintenanceApp() {
         </ScrollView>
 
         {/* Bottom Navigation */}
-        <BottomNavigation activeTab="home" />
+        <BottomNavigation
+          activeTab="home"
+          onTabPress={(tab) => {
+            if (tab === "notifications") setCurrentPage("notifications");
+          }}
+        />
       </View>
     );
   }
@@ -376,7 +382,9 @@ export default function MaintenanceApp() {
                   style={styles.technicianAvatar}
                 />
                 <View style={styles.technicianDetails}>
-                  <Text style={styles.technicianName}>Jerrianne Alejandria</Text>
+                  <Text style={styles.technicianName}>
+                    Jerrianne Alejandria
+                  </Text>
                   <Text style={styles.technicianDate}>October 20</Text>
                 </View>
               </View>
@@ -389,6 +397,62 @@ export default function MaintenanceApp() {
               />
             </View>
           </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Notifications Page
+  if (currentPage === "notifications") {
+    return (
+      <View style={styles.dashboardContainer}>
+        {/* Header */}
+        <View style={styles.notificationHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("homeowner-dashboard")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <View>
+            <Text style={styles.notificationTitle}>Notification</Text>
+            <Text style={styles.notificationDate}>
+              Tuesday, January 14, 2025
+            </Text>
+          </View>
+        </View>
+
+        {/* Notifications List */}
+        <ScrollView style={styles.notificationsList}>
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>Completed Request</Text>
+            <Text style={styles.notificationTime}>Just now</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>Pending Request</Text>
+            <Text style={styles.notificationTime}>1 hr ago</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>Pending Request</Text>
+            <Text style={styles.notificationTime}>2 hrs ago</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>In progress Request</Text>
+            <Text style={styles.notificationTime}>4 hrs ago</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>Completed Request</Text>
+            <Text style={styles.notificationTime}>1 day ago</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationItem}>
+            <Text style={styles.notificationText}>Completed Request</Text>
+            <Text style={styles.notificationTime}>2 days ago</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -745,4 +809,45 @@ const styles = StyleSheet.create({
   doneButton: {
     marginTop: spacing.md,
   } as ViewStyle,
+  notificationHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.lg,
+    padding: spacing.xl,
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  } as ViewStyle,
+  notificationTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  } as TextStyle,
+  notificationDate: {
+    fontSize: 12,
+    color: colors.text.tertiary,
+  } as TextStyle,
+  notificationsList: {
+    flex: 1,
+    backgroundColor: colors.background,
+  } as ViewStyle,
+  notificationItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: spacing.lg,
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  } as ViewStyle,
+  notificationText: {
+    fontSize: 16,
+    color: colors.text.primary,
+    fontWeight: "500",
+  } as TextStyle,
+  notificationTime: {
+    fontSize: 14,
+    color: colors.text.secondary,
+  } as TextStyle,
 });
