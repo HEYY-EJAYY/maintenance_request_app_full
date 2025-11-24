@@ -175,7 +175,7 @@ export default function MaintenanceApp() {
 
         {/* Bottom Navigation */}
         <BottomNavigation
-          activeTab="home"
+          activeTab="requests"
           onTabPress={(tab) => {
             if (tab === "home") setCurrentPage("homeowner-dashboard");
             if (tab === "notifications") setCurrentPage("notifications");
