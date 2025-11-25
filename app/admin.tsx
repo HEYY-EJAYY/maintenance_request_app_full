@@ -1,3 +1,12 @@
+type AdminPageType =
+  | "admin-dashboard"
+  | "admin-profile"
+  | "admin-notifications";
+
+interface AdminAppProps {
+  onLogout: () => void;
+}
+
 import React, { useState } from "react";
 import {
   Image,
@@ -9,19 +18,154 @@ import {
 } from "react-native";
 import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
 
-type AdminPageType =
-  | "admin-dashboard"
-  | "admin-profile"
-  | "admin-notifications";
-
-interface AdminAppProps {
-  onLogout: () => void;
-}
-
 export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
-  const [currentPage, setCurrentPage] =
-    useState<AdminPageType>("admin-dashboard");
+  const [currentPage, setCurrentPage] = useState<
+    AdminPageType | "maintenance-requests"
+  >("admin-dashboard");
 
+  // Maintenance Requests List Page
+  if (currentPage === "maintenance-requests") {
+    const requests = [
+      {
+        id: "REQ-2025-0012",
+        date: "2025-10-25",
+        type: "Plumbing",
+        status: "pending",
+        unit: "Unit 12A",
+      },
+      {
+        id: "REQ-2025-0003",
+        date: "2025-10-18",
+        type: "Electrical",
+        status: "in-progress",
+        unit: "Unit 5A",
+      },
+      {
+        id: "REQ-2025-0006",
+        date: "2025-09-28",
+        type: "General",
+        status: "completed",
+        unit: "Unit 7C",
+      },
+      {
+        id: "REQ-2025-0201",
+        date: "2025-08-20",
+        type: "General",
+        status: "completed",
+        unit: "Unit 10C",
+      },
+      {
+        id: "REQ-2025-0101",
+        date: "2025-07-24",
+        type: "Electrical",
+        status: "in-progress",
+        unit: "Unit 33H",
+      },
+      {
+        id: "REQ-2025-0040",
+        date: "2025-04-15",
+        type: "Plumbing",
+        status: "in-progress",
+        unit: "Unit 3E",
+      },
+      {
+        id: "REQ-2025-0901",
+        date: "2025-04-13",
+        type: "Electrical",
+        status: "completed",
+        unit: "Unit 9B",
+      },
+    ];
+
+    const getStatusStyle = (status: string) => {
+      if (status === "pending")
+        return { backgroundColor: "#fbbf24", color: "#92400e" };
+      if (status === "in-progress")
+        return { backgroundColor: "#93c5fd", color: "#1e40af" };
+      if (status === "completed")
+        return { backgroundColor: "#86efac", color: "#166534" };
+      return {};
+    };
+
+    const getStatusText = (status: string) => {
+      if (status === "pending") return "Pending";
+      if (status === "in-progress") return "In progress";
+      if (status === "completed") return "Completed";
+      return status;
+    };
+
+    return (
+      <View style={styles.dashboardContainer}>
+        {/* Header */}
+        <View style={styles.submitHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("admin-dashboard")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.submitHeaderTitle}>Maintenance Request</Text>
+        </View>
+
+        {/* Table Header */}
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderCell}>Request ID</Text>
+            <Text style={styles.tableHeaderCell}>Date</Text>
+            <Text style={styles.tableHeaderCell}>Type</Text>
+            <Text style={styles.tableHeaderCell}>Status</Text>
+          </View>
+          <ScrollView style={styles.tableBody}>
+            {requests.map((request, index) => (
+              <View key={index} style={styles.tableRow}>
+                <View style={styles.tableCell}>
+                  <Text style={styles.requestIdText}>{request.id}</Text>
+                  <Text style={styles.unitText}>{request.unit}</Text>
+                </View>
+                <View style={styles.tableCell}>
+                  <Text style={styles.dateText2}>{request.date}</Text>
+                </View>
+                <View style={styles.tableCell}>
+                  <Text style={styles.typeText}>{request.type}</Text>
+                </View>
+                <View style={styles.tableCell}>
+                  <Text
+                    style={[
+                      styles.statusBadge2,
+                      getStatusStyle(request.status),
+                    ]}
+                  >
+                    {getStatusText(request.status)}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNav}>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("admin-dashboard")}
+          >
+            <Text style={styles.navIcon}>🏠</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton}>
+            <Text style={styles.navIcon}>📄</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("admin-notifications")}
+          >
+            <Text style={styles.navIcon}>🔔</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  // Admin Dashboard
   if (currentPage === "admin-dashboard") {
     return (
       <View style={styles.dashboardContainer}>
@@ -231,7 +375,10 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
                 <Text style={styles.performanceLabel}>Technician Active</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.taskButton}>
+            <TouchableOpacity
+              style={styles.taskButton}
+              onPress={() => setCurrentPage("maintenance-requests")}
+            >
               <Text style={styles.taskButtonText}>Task</Text>
             </TouchableOpacity>
           </View>
@@ -278,6 +425,101 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
 };
 
 const styles = StyleSheet.create({
+  // ...existing code...
+  submitHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 10,
+    borderRadius: 8,
+    backgroundColor: "#f3f4f6",
+  },
+  backIcon: {
+    fontSize: 18,
+    color: "#333",
+  },
+  submitHeaderTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  tableContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    overflow: "hidden",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    padding: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: "#e5e7eb",
+    backgroundColor: "#f9fafb",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  tableHeaderCell: {
+    flex: 1.5,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#666",
+    textAlign: "left",
+  },
+  tableBody: {
+    maxHeight: 320,
+  },
+  tableRow: {
+    flexDirection: "row",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+    alignItems: "center",
+  },
+  tableCell: {
+    flex: 1.5,
+    textAlign: "left",
+  },
+  requestIdText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 2,
+  },
+  unitText: {
+    fontSize: 11,
+    color: "#666",
+  },
+  dateText2: {
+    fontSize: 11,
+    color: "#666",
+  },
+  typeText: {
+    fontSize: 12,
+    color: "#333",
+  },
+  statusBadge2: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    fontSize: 11,
+    fontWeight: "bold",
+    overflow: "hidden",
+    alignSelf: "flex-start",
+    marginTop: 2,
+  },
   dashboardContainer: {
     flex: 1,
     backgroundColor: "#f3f4f6",
