@@ -11,17 +11,121 @@ import React, { useState } from "react";
 import {
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
 
 export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
   const [currentPage, setCurrentPage] = useState<
     AdminPageType | "maintenance-requests"
   >("admin-dashboard");
+
+  // Admin Profile Page
+  if (currentPage === "admin-profile") {
+    return (
+      <SafeAreaView style={styles.dashboardContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        {/* Header */}
+        <View style={styles.submitHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => setCurrentPage("admin-dashboard")}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.submitHeaderTitle}>Profile</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        {/* Profile Content */}
+        <ScrollView
+          style={styles.profileContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Profile Avatar Section */}
+          <View style={styles.profileAvatarSection}>
+            <Image
+              source={{
+                uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rica",
+              }}
+              style={styles.profileAvatarLarge}
+            />
+            <Text style={styles.profileRole}>Admin</Text>
+          </View>
+
+          {/* Profile Info Card */}
+          <View style={styles.profileCard}>
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Name :</Text>
+              <View style={styles.profileFieldValue}>
+                <Text style={styles.profileFieldValueText}>Rica Mae Rojas</Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Email :</Text>
+              <View style={styles.profileFieldValue}>
+                <Text style={styles.profileFieldValueText}>
+                  ricamaerojas108@gmail.com
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Address :</Text>
+              <View style={styles.profileFieldValue}>
+                <Text style={styles.profileFieldValueText}>
+                  Butuan City, Philippines
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.profileField}>
+              <Text style={styles.profileFieldLabel}>Phone:</Text>
+              <View style={styles.profileFieldValue}>
+                <Text style={styles.profileFieldValueText}>09565689390</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <TouchableOpacity style={styles.adminLogoutButton} onPress={onLogout}>
+            <Text style={styles.adminLogoutButtonText}>Log out</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNav}>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("admin-dashboard")}
+          >
+            <Text style={styles.navIcon}>🏠</Text>
+            <Text style={styles.navText}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("maintenance-requests")}
+          >
+            <Text style={styles.navIcon}>📄</Text>
+            <Text style={styles.navText}>Tasks</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("admin-notifications")}
+          >
+            <Text style={styles.navIcon}>🔔</Text>
+            <Text style={styles.navText}>Alerts</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   // Maintenance Requests List Page
   if (currentPage === "maintenance-requests") {
@@ -95,7 +199,8 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
     };
 
     return (
-      <View style={styles.dashboardContainer}>
+      <SafeAreaView style={styles.dashboardContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         {/* Header */}
         <View style={styles.submitHeader}>
           <TouchableOpacity
@@ -105,6 +210,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             <Text style={styles.backIcon}>←</Text>
           </TouchableOpacity>
           <Text style={styles.submitHeaderTitle}>Maintenance Request</Text>
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* Table Header */}
@@ -115,7 +221,10 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             <Text style={styles.tableHeaderCell}>Type</Text>
             <Text style={styles.tableHeaderCell}>Status</Text>
           </View>
-          <ScrollView style={styles.tableBody}>
+          <ScrollView
+            style={styles.tableBody}
+            showsVerticalScrollIndicator={false}
+          >
             {requests.map((request, index) => (
               <View key={index} style={styles.tableRow}>
                 <View style={styles.tableCell}>
@@ -150,18 +259,21 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             onPress={() => setCurrentPage("admin-dashboard")}
           >
             <Text style={styles.navIcon}>🏠</Text>
+            <Text style={styles.navText}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navButton}>
             <Text style={styles.navIcon}>📄</Text>
+            <Text style={styles.navText}>Tasks</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navButton}
             onPress={() => setCurrentPage("admin-notifications")}
           >
             <Text style={styles.navIcon}>🔔</Text>
+            <Text style={styles.navText}>Alerts</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -176,7 +288,8 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       { text: "Technician Assigned (Electrical)", time: "2 days ago" },
     ];
     return (
-      <View style={styles.dashboardContainer}>
+      <SafeAreaView style={styles.dashboardContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         {/* Header */}
         <View style={styles.adminNotificationHeader}>
           <TouchableOpacity
@@ -191,17 +304,23 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
               Tuesday, January 14, 2025
             </Text>
           </View>
-          <View style={styles.smallProfilePic}>
+          <TouchableOpacity
+            style={styles.smallProfilePic}
+            onPress={() => setCurrentPage("admin-profile")}
+          >
             <Image
               source={{
                 uri: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rica",
               }}
               style={styles.profileImage}
             />
-          </View>
+          </TouchableOpacity>
         </View>
         {/* Notifications List */}
-        <ScrollView style={styles.adminNotificationsList}>
+        <ScrollView
+          style={styles.adminNotificationsList}
+          showsVerticalScrollIndicator={false}
+        >
           {notifications.map((notif, idx) => (
             <View key={idx} style={styles.adminNotificationCard}>
               <Text style={styles.adminNotificationText}>{notif.text}</Text>
@@ -216,28 +335,35 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             onPress={() => setCurrentPage("admin-dashboard")}
           >
             <Text style={styles.navIcon}>🏠</Text>
+            <Text style={styles.navText}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton}>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("maintenance-requests")}
+          >
             <Text style={styles.navIcon}>📄</Text>
+            <Text style={styles.navText}>Tasks</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navButton}
             onPress={() => setCurrentPage("admin-notifications")}
           >
             <Text style={styles.navIcon}>🔔</Text>
+            <Text style={styles.navText}>Alerts</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Admin Dashboard
   if (currentPage === "admin-dashboard") {
     return (
-      <View style={styles.dashboardContainer}>
+      <SafeAreaView style={styles.dashboardContainer}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         {/* Header */}
         <View style={styles.adminHeader}>
-          <View>
+          <View style={styles.adminHeaderText}>
             <Text style={styles.welcomeBack}>Welcome back,</Text>
             <Text style={styles.adminName}>Admin Rica!</Text>
             <Text style={styles.dateText}>Tuesday, January 14, 2025</Text>
@@ -255,7 +381,10 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.adminContent}>
+        <ScrollView
+          style={styles.adminContent}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Dashboard Overview Section */}
           <View style={styles.overviewSection}>
             <View style={styles.overviewBanner}>
@@ -445,7 +574,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
               style={styles.taskButton}
               onPress={() => setCurrentPage("maintenance-requests")}
             >
-              <Text style={styles.taskButtonText}>Task</Text>
+              <Text style={styles.taskButtonText}>View All Tasks</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -457,28 +586,33 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             onPress={() => setCurrentPage("admin-dashboard")}
           >
             <Text style={styles.navIcon}>🏠</Text>
+            <Text style={styles.navText}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton}>
+          <TouchableOpacity
+            style={styles.navButton}
+            onPress={() => setCurrentPage("maintenance-requests")}
+          >
             <Text style={styles.navIcon}>📄</Text>
+            <Text style={styles.navText}>Tasks</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navButton}
             onPress={() => setCurrentPage("admin-notifications")}
           >
             <Text style={styles.navIcon}>🔔</Text>
+            <Text style={styles.navText}>Alerts</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
-  // Placeholder for other pages
+  // Fallback for any other pages
   return (
-    <View style={styles.dashboardContainer}>
+    <SafeAreaView style={styles.dashboardContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <Text style={{ marginTop: 100, textAlign: "center", fontSize: 18 }}>
-        {currentPage === "admin-profile"
-          ? "Profile Page (Coming Soon)"
-          : "Notifications (Coming Soon)"}
+        Page not found
       </Text>
       <TouchableOpacity
         style={[styles.navButton, { alignSelf: "center", marginTop: 40 }]}
@@ -486,277 +620,199 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       >
         <Text style={styles.navIcon}>🏠</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  // ...existing code...
-  adminNotificationHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-  },
-  adminNotificationHeaderContent: {
-    flex: 1,
-  },
-  smallProfilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: "hidden",
-    marginLeft: 8,
-  },
-  adminNotificationsList: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  adminNotificationCard: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    backgroundColor: "white",
-    borderRadius: 8,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  adminNotificationText: {
-    fontSize: 14,
-    color: "#333",
-    fontWeight: "500",
-  },
-  notificationTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  notificationDate: {
-    fontSize: 12,
-    color: "#888",
-    marginTop: 2,
-  },
-  notificationTime: {
-    fontSize: 12,
-    color: "#888",
-    marginLeft: 12,
-  },
-  submitHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-  },
-  backButton: {
-    padding: 8,
-    marginRight: 10,
-    borderRadius: 8,
-    backgroundColor: "#f3f4f6",
-  },
-  backIcon: {
-    fontSize: 18,
-    color: "#333",
-  },
-  submitHeaderTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  tableContainer: {
-    flex: 1,
-    backgroundColor: "white",
-    marginHorizontal: 20,
-    marginTop: 20,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-    overflow: "hidden",
-  },
-  tableHeader: {
-    flexDirection: "row",
-    padding: 16,
-    borderBottomWidth: 2,
-    borderBottomColor: "#e5e7eb",
-    backgroundColor: "#f9fafb",
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-  },
-  tableHeaderCell: {
-    flex: 1.5,
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#666",
-    textAlign: "left",
-  },
-  tableBody: {
-    maxHeight: 320,
-  },
-  tableRow: {
-    flexDirection: "row",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-    alignItems: "center",
-  },
-  tableCell: {
-    flex: 1.5,
-    textAlign: "left",
-  },
-  requestIdText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 2,
-  },
-  unitText: {
-    fontSize: 11,
-    color: "#666",
-  },
-  dateText2: {
-    fontSize: 11,
-    color: "#666",
-  },
-  typeText: {
-    fontSize: 12,
-    color: "#333",
-  },
-  statusBadge2: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    fontSize: 11,
-    fontWeight: "bold",
-    overflow: "hidden",
-    alignSelf: "flex-start",
-    marginTop: 2,
-  },
   dashboardContainer: {
     flex: 1,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#f8fafc",
   },
+  // Header Styles
   adminHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
+    alignItems: "flex-start",
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
     backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  adminHeaderText: {
+    flex: 1,
   },
   welcomeBack: {
-    fontSize: 16,
-    color: "#666",
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 2,
   },
   adminName: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#333",
-    marginTop: 4,
+    color: "#1f2937",
+    marginBottom: 4,
   },
   dateText: {
     fontSize: 13,
-    color: "#888",
-    marginTop: 2,
+    color: "#9ca3af",
   },
   profilePic: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "#e5e7eb",
+    marginLeft: 12,
   },
   profileImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
   },
+  submitHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  headerSpacer: {
+    width: 40, // Same as back button width for balance
+  },
+  adminNotificationHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  adminNotificationHeaderContent: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  smallProfilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  backButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#f3f4f6",
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backIcon: {
+    fontSize: 18,
+    color: "#374151",
+    fontWeight: "bold",
+  },
+  submitHeaderTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1f2937",
+    textAlign: "center",
+    flex: 1,
+  },
+  notificationTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1f2937",
+  },
+  notificationDate: {
+    fontSize: 12,
+    color: "#6b7280",
+    marginTop: 2,
+  },
+  // Content Styles
   adminContent: {
     flex: 1,
-    paddingBottom: 20,
   },
   overviewSection: {
-    margin: 20,
+    margin: 16,
   },
   overviewBanner: {
     backgroundColor: "#2563eb",
-    backgroundImage: "url(https://i.imgur.com/5pZGJYm.jpg)", // Not supported in RN, fallback to color
-    backgroundSize: "cover", // Not supported in RN
-    backgroundPosition: "center", // Not supported in RN
-    paddingVertical: 30,
+    paddingVertical: 24,
     paddingHorizontal: 20,
     borderRadius: 16,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   overviewTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: "white",
-    textShadowColor: "rgba(0,0,0,0.8)",
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
   },
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: 12,
   },
   statCard: {
     width: "48%",
-    padding: 20,
+    padding: 16,
     borderRadius: 12,
     marginBottom: 12,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   statNumber: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#1f2937",
     marginBottom: 4,
   },
   statLabel: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600",
     color: "#1f2937",
     marginBottom: 4,
+    textAlign: "center",
   },
   statSubtext: {
-    fontSize: 11,
+    fontSize: 10,
     color: "#4b5563",
+    textAlign: "center",
   },
   chartSection: {
-    margin: 20,
+    margin: 16,
     backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
     elevation: 2,
   },
   chartTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#1f2937",
     marginBottom: 16,
   },
   chartContainer: {
-    position: "relative",
     alignItems: "center",
   },
   chart: {
@@ -773,92 +829,289 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    marginHorizontal: 6,
   },
   legendDot: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 4,
   },
   legendText: {
     fontSize: 12,
-    color: "#666",
+    color: "#6b7280",
   },
   performanceSection: {
-    margin: 20,
+    margin: 16,
     backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
     elevation: 2,
   },
   performanceTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#1f2937",
     marginBottom: 16,
   },
   performanceGrid: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   performanceCard: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 8,
+    borderColor: "#f3f4f6",
+    borderRadius: 12,
     alignItems: "center",
     marginHorizontal: 4,
+    backgroundColor: "#fafafa",
   },
   performanceIcon: {
-    fontSize: 24,
-    marginBottom: 8,
+    fontSize: 20,
+    marginBottom: 6,
   },
   performanceValue: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#1f2937",
     marginBottom: 4,
   },
   performanceLabel: {
     fontSize: 10,
-    color: "#666",
+    color: "#6b7280",
     textAlign: "center",
-    lineHeight: 13,
+    lineHeight: 12,
   },
   taskButton: {
     width: "100%",
     paddingVertical: 14,
     backgroundColor: "#166534",
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   taskButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
+  // Bottom Navigation
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     backgroundColor: "white",
-    paddingVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderTopWidth: 1,
     borderTopColor: "#e5e7eb",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 8,
   },
   navButton: {
-    padding: 10,
+    alignItems: "center",
+    padding: 8,
     borderRadius: 8,
+    flex: 1,
   },
   navIcon: {
-    fontSize: 24,
+    fontSize: 20,
+    marginBottom: 4,
+  },
+  navText: {
+    fontSize: 10,
+    color: "#6b7280",
+    fontWeight: "500",
+  },
+  // Table Styles
+  tableContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+    overflow: "hidden",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+    backgroundColor: "#f9fafb",
+  },
+  tableHeaderCell: {
+    flex: 1.5,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#6b7280",
+    textAlign: "left",
+  },
+  tableBody: {
+    flex: 1,
+  },
+  tableRow: {
+    flexDirection: "row",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f3f4f6",
+    alignItems: "center",
+  },
+  tableCell: {
+    flex: 1.5,
+  },
+  requestIdText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#1f2937",
+    marginBottom: 2,
+  },
+  unitText: {
+    fontSize: 11,
+    color: "#6b7280",
+  },
+  dateText2: {
+    fontSize: 11,
+    color: "#6b7280",
+  },
+  typeText: {
+    fontSize: 12,
+    color: "#1f2937",
+    fontWeight: "500",
+  },
+  statusBadge2: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    fontSize: 10,
+    fontWeight: "bold",
+    overflow: "hidden",
+    alignSelf: "flex-start",
+  },
+  // Notifications Styles
+  adminNotificationsList: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f8fafc",
+  },
+  adminNotificationCard: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: "white",
+    borderRadius: 12,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  adminNotificationText: {
+    fontSize: 14,
+    color: "#1f2937",
+    fontWeight: "500",
+    flex: 1,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: "#9ca3af",
+    marginLeft: 12,
+  },
+  // Profile Page Styles
+  profileContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  profileAvatarSection: {
+    alignItems: "center",
+    marginBottom: 24,
+    paddingVertical: 16,
+  },
+  profileAvatarLarge: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 12,
+    borderWidth: 3,
+    borderColor: "#e5e7eb",
+  },
+  profileRole: {
+    fontSize: 14,
+    color: "#6b7280",
+    fontWeight: "500",
+    backgroundColor: "#f3f4f6",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  profileCard: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  profileField: {
+    marginBottom: 20,
+  },
+  profileFieldLabel: {
+    fontSize: 13,
+    color: "#6b7280",
+    marginBottom: 6,
+    fontWeight: "500",
+  },
+  profileFieldValue: {
+    padding: 12,
+    backgroundColor: "#f9fafb",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  profileFieldValueText: {
+    fontSize: 15,
+    color: "#1f2937",
+    fontWeight: "500",
+  },
+  adminLogoutButton: {
+    width: "100%",
+    paddingVertical: 16,
+    backgroundColor: "#dc2626",
+    borderRadius: 12,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 20,
+  },
+  adminLogoutButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

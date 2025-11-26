@@ -12,8 +12,10 @@ export default function MaintenanceApp() {
   const [currentPage, setCurrentPage] = useState<PageType>("splash");
   const [userRole, setUserRole] = useState<UserRole>("homeowner");
 
+  // Handle login & redirect to correct app
   const handleLogin = (role: UserRole) => {
     setUserRole(role);
+
     if (role === "homeowner") {
       setCurrentPage("homeowner-app");
     } else {
@@ -21,10 +23,12 @@ export default function MaintenanceApp() {
     }
   };
 
+  // Splash Screen
   if (currentPage === "splash") {
     return <SplashScreen onGetStarted={() => setCurrentPage("login")} />;
   }
 
+  // Login Screen
   if (currentPage === "login") {
     return (
       <LoginForm
@@ -34,6 +38,7 @@ export default function MaintenanceApp() {
     );
   }
 
+  // Signup Screen
   if (currentPage === "signup") {
     return (
       <SignUpForm
@@ -43,10 +48,12 @@ export default function MaintenanceApp() {
     );
   }
 
+  // Homeowner App
   if (currentPage === "homeowner-app") {
     return <HomeownerApp onLogout={() => setCurrentPage("splash")} />;
   }
 
+  // Admin App
   if (currentPage === "admin-app") {
     return <AdminApp onLogout={() => setCurrentPage("splash")} />;
   }

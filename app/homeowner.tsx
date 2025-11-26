@@ -3,7 +3,9 @@ import {
   Image,
   ImageBackground,
   ImageStyle,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextStyle,
@@ -86,7 +88,8 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
   // Dashboard
   if (currentPage === "dashboard") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -161,14 +164,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "request-detail") setCurrentPage("submit-request");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Submit Request Page
   if (currentPage === "submit-request") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         <ScrollView style={styles.scrollView}>
           {/* Header */}
           <View style={styles.pageHeader}>
@@ -208,14 +212,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "notifications") setCurrentPage("notifications");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Request Detail Page
   if (currentPage === "request-detail") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         {/* Header */}
         <View style={styles.pageHeader}>
           <TouchableOpacity
@@ -272,14 +277,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "notifications") setCurrentPage("notifications");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Chat Page
   if (currentPage === "chat") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         {/* Header */}
         <View style={styles.pageHeader}>
           <TouchableOpacity
@@ -384,14 +390,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "notifications") setCurrentPage("notifications");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Technical Issue Page
   if (currentPage === "technical-issue") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         {/* Header */}
         <View style={styles.pageHeader}>
           <TouchableOpacity
@@ -448,14 +455,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "notifications") setCurrentPage("notifications");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Notifications Page
   if (currentPage === "notifications") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         {/* Header */}
         <View style={styles.notificationHeader}>
           <TouchableOpacity
@@ -525,14 +533,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             if (tab === "request-detail") setCurrentPage("submit-request");
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Profile Page
   if (currentPage === "profile") {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         {/* Header */}
         <View style={styles.pageHeader}>
           <TouchableOpacity
@@ -599,7 +608,7 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             <Text style={styles.logoutButtonText}>Log out</Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -622,7 +631,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: spacing.xl,
+    paddingTop: spacing.lg,
     backgroundColor: colors.white,
+    marginTop: 8,
   } as ViewStyle,
   welcomeBack: {
     fontSize: 14,
@@ -721,10 +732,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: spacing.lg,
     paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     gap: spacing.lg,
+    marginTop: 8,
   } as ViewStyle,
   backButton: {
     padding: spacing.sm,
@@ -972,9 +985,11 @@ const styles = StyleSheet.create({
     gap: 16,
     padding: 16,
     paddingHorizontal: 20,
+    paddingTop: spacing.lg,
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e5e5",
+    marginTop: 8,
   } as ViewStyle,
   notificationTitle: {
     fontSize: 18,
@@ -1025,6 +1040,7 @@ const styles = StyleSheet.create({
   profileAvatarSection: {
     alignItems: "center",
     marginBottom: spacing.xl,
+    marginTop: 16,
   } as ViewStyle,
   profileAvatarLarge: {
     width: 80,
