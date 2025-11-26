@@ -12,6 +12,7 @@ export const colors = {
     primary: "#333333",
     secondary: "#666666",
     tertiary: "#999999",
+    accent: "#f59e0b",
   },
 
   status: {
@@ -38,6 +39,7 @@ export const colors = {
     electrical: "#fcd34d",
     security: "#86efac",
     general: "#e5e7eb",
+    accent: "#f59e0b",
   },
 
   border: "#e5e5e5",

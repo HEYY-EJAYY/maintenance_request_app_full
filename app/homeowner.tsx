@@ -688,13 +688,13 @@ const styles = StyleSheet.create({
   bannerQuick: {
     fontSize: 24,
     fontWeight: "bold",
-    color: colors.category.electrical,
+    color: colors.category.accent,
     letterSpacing: 2,
     marginBottom: 7,
   },
   bannerTextIssue: {
     fontSize: 15,
-    color: colors.category.electrical,
+    color: colors.category.accent,
     letterSpacing: 2,
     marginBottom: spacing.lg,
   },
