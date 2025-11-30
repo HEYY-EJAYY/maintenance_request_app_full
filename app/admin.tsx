@@ -727,15 +727,6 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             <Text style={styles.adminName}>Maintenance Requests</Text>
             <Text style={styles.dateText}>All maintenance tasks</Text>
           </View>
-          <TouchableOpacity
-            style={styles.profilePic}
-            onPress={() => setCurrentPage("admin-profile")}
-          >
-            <Image
-              source={getProfileImageSource()}
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
         </View>
 
         <ScrollView style={styles.adminContent}>
