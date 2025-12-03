@@ -90,7 +90,7 @@ export const MaintenanceRequestsPage: React.FC<
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderCell}>Request ID</Text>
-            <Text style={styles.tableHeaderCell}>Type</Text>
+            <Text style={styles.tableHeaderCellType}>Type</Text>
             <Text style={styles.tableHeaderCell}>Status</Text>
             <Text style={styles.tableHeaderCell}>Priority</Text>
           </View>
@@ -102,7 +102,7 @@ export const MaintenanceRequestsPage: React.FC<
                 style={styles.tableRow}
                 onPress={() => onRequestClick(request)}
               >
-                <View style={styles.tableCell}>
+                <View style={styles.tableCellReq}>
                   <Text style={styles.requestIdText}>{request.id}</Text>
                   <Text style={styles.unitText}>{request.unit}</Text>
                 </View>
