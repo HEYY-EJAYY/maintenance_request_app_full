@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(27, 126, 7, 0.4)",
   },
   overviewContent: {
     padding: 20,

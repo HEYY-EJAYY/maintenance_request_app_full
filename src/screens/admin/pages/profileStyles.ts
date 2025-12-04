@@ -119,6 +119,53 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#1f2937",
   },
+  profileFieldInput: {
+    backgroundColor: "#ffffff",
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: "#3b82f6",
+    fontSize: 15,
+    color: "#1f2937",
+  },
+  editButton: {
+    backgroundColor: "#3b82f6",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  editButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  editActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  cancelButton: {
+    backgroundColor: "#6b7280",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  cancelButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  saveButton: {
+    backgroundColor: "#10b981",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 15,
+  },
   adminLogoutButton: {
     backgroundColor: "#ef4444",
     padding: 16,

@@ -25,6 +25,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: colors.text.primary,
+    flex: 1,
+  },
+  editButton: {
+    backgroundColor: colors.accent,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  editButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  cancelButton: {
+    backgroundColor: "#6b7280",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  cancelButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 14,
   },
   profileContainer: {
     flex: 1,
@@ -106,6 +129,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#333",
     fontWeight: "500",
+  },
+  profileFieldInput: {
+    padding: 12,
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: colors.accent,
+    fontSize: 15,
+    color: "#333",
+    fontWeight: "500",
+  },
+  saveButton: {
+    backgroundColor: "#10b981",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 15,
   },
   logoutButton: {
     width: "100%",

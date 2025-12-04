@@ -55,6 +55,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "",
       completionNotes: "",
       completedDate: "",
+      messages: [],
     },
     {
       id: "REQ-2025-0033",
@@ -69,6 +70,18 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "Checking wiring connections",
       completionNotes: "",
       completedDate: "",
+      messages: [
+        {
+          sender: "homeowner",
+          text: "When will the technician arrive?",
+          timestamp: "10:30 AM",
+        },
+        {
+          sender: "admin",
+          text: "The technician is scheduled to arrive today at 2:00 PM.",
+          timestamp: "10:35 AM",
+        },
+      ],
     },
     {
       id: "REQ-2025-0025",
@@ -83,6 +96,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "Refrigerant refill needed",
       completionNotes: "Refilled refrigerant and cleaned filters",
       completedDate: "2025-10-28",
+      messages: [],
     },
     {
       id: "REQ-2025-0018",
@@ -97,6 +111,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "Checking flush mechanism",
       completionNotes: "Replaced flush valve",
       completedDate: "2025-10-25",
+      messages: [],
     },
     {
       id: "REQ-2025-0041",
@@ -111,6 +126,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "",
       completionNotes: "",
       completedDate: "",
+      messages: [],
     },
     {
       id: "REQ-2025-0037",
@@ -125,6 +141,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
       technicianNotes: "Inspecting thermostat",
       completionNotes: "",
       completedDate: "",
+      messages: [],
     },
   ]);
 
@@ -292,6 +309,45 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
     Alert.alert("Success", "Request marked as completed");
   };
 
+  const handleSetPriority = (priority: string) => {
+    if (!selectedRequest) return;
+
+    const updatedRequests = allRequests.map((req) =>
+      req.id === selectedRequest.id ? { ...req, priority } : req
+    );
+
+    setAllRequests(updatedRequests);
+    setSelectedRequest({ ...selectedRequest, priority });
+  };
+
+  const handleSendMessage = (message: string) => {
+    if (!selectedRequest || !message.trim()) return;
+
+    const newMessage = {
+      sender: "admin",
+      text: message,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    const updatedRequests = allRequests.map((req) =>
+      req.id === selectedRequest.id
+        ? {
+            ...req,
+            messages: [...(req.messages || []), newMessage],
+          }
+        : req
+    );
+
+    setAllRequests(updatedRequests);
+    setSelectedRequest({
+      ...selectedRequest,
+      messages: [...(selectedRequest.messages || []), newMessage],
+    });
+  };
+
   // Render appropriate page based on currentPage state
   const renderPage = () => {
     switch (currentPage) {
@@ -456,6 +512,8 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
         getStatusStyle={getStatusStyle}
         getStatusText={getStatusText}
         getPriorityStyle={getPriorityStyle}
+        onSetPriority={handleSetPriority}
+        onSendMessage={handleSendMessage}
       />
 
       <AssignTechnicianModal

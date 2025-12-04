@@ -1,5 +1,12 @@
-import React from "react";
-import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Modal,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import styles from "./modalStyles";
 
 interface RequestDetailModalProps {
@@ -11,6 +18,8 @@ interface RequestDetailModalProps {
   getPriorityStyle: (priority: string) => any;
   onAssignTechnician: () => void;
   onCompleteRequest: () => void;
+  onSetPriority?: (priority: string) => void;
+  onSendMessage?: (message: string) => void;
 }
 
 export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
@@ -22,7 +31,18 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
   getPriorityStyle,
   onAssignTechnician,
   onCompleteRequest,
+  onSetPriority,
+  onSendMessage,
 }) => {
+  const [messageInput, setMessageInput] = useState("");
+
+  const handleSendMessage = () => {
+    if (messageInput.trim() && onSendMessage) {
+      onSendMessage(messageInput);
+      setMessageInput("");
+    }
+  };
+
   if (!request) return null;
 
   return (
@@ -79,14 +99,81 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
 
             <View style={styles.detailSection}>
               <Text style={styles.detailLabel}>Priority</Text>
-              <Text
-                style={[
-                  styles.priorityBadge,
-                  getPriorityStyle(request.priority),
-                ]}
-              >
-                {request.priority}
-              </Text>
+              {request.status === "pending" && onSetPriority ? (
+                <View style={styles.prioritySelector}>
+                  <TouchableOpacity
+                    style={[
+                      styles.priorityOption,
+                      request.priority === "High" &&
+                        styles.priorityOptionActive,
+                      {
+                        backgroundColor:
+                          request.priority === "High" ? "#fca5a5" : "#fff",
+                      },
+                    ]}
+                    onPress={() => onSetPriority("High")}
+                  >
+                    <Text
+                      style={[
+                        styles.priorityOptionText,
+                        request.priority === "High" && { color: "#7f1d1d" },
+                      ]}
+                    >
+                      High
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.priorityOption,
+                      request.priority === "Medium" &&
+                        styles.priorityOptionActive,
+                      {
+                        backgroundColor:
+                          request.priority === "Medium" ? "#fde047" : "#fff",
+                      },
+                    ]}
+                    onPress={() => onSetPriority("Medium")}
+                  >
+                    <Text
+                      style={[
+                        styles.priorityOptionText,
+                        request.priority === "Medium" && { color: "#713f12" },
+                      ]}
+                    >
+                      Medium
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.priorityOption,
+                      request.priority === "Low" && styles.priorityOptionActive,
+                      {
+                        backgroundColor:
+                          request.priority === "Low" ? "#d1d5db" : "#fff",
+                      },
+                    ]}
+                    onPress={() => onSetPriority("Low")}
+                  >
+                    <Text
+                      style={[
+                        styles.priorityOptionText,
+                        request.priority === "Low" && { color: "#374151" },
+                      ]}
+                    >
+                      Low
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Text
+                  style={[
+                    styles.priorityBadge,
+                    getPriorityStyle(request.priority),
+                  ]}
+                >
+                  {request.priority}
+                </Text>
+              )}
             </View>
 
             <View style={styles.detailSection}>
@@ -129,6 +216,57 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
               <View style={styles.detailSection}>
                 <Text style={styles.detailLabel}>Completed Date</Text>
                 <Text style={styles.detailValue}>{request.completedDate}</Text>
+              </View>
+            )}
+
+            {/* Chat Section for In-Progress Requests */}
+            {request.status === "in-progress" && (
+              <View style={styles.chatSection}>
+                <Text style={styles.chatSectionTitle}>Messages</Text>
+                <View style={styles.chatContainer}>
+                  {request.messages && request.messages.length > 0 ? (
+                    request.messages.map((msg: any, index: number) => (
+                      <View
+                        key={index}
+                        style={[
+                          styles.chatMessage,
+                          msg.sender === "admin"
+                            ? styles.chatMessageAdmin
+                            : styles.chatMessageHomeowner,
+                        ]}
+                      >
+                        <Text style={styles.chatSenderLabel}>
+                          {msg.sender === "admin" ? "You" : "Homeowner"}
+                        </Text>
+                        <Text style={styles.chatMessageText}>{msg.text}</Text>
+                        <Text style={styles.chatMessageTime}>
+                          {msg.timestamp}
+                        </Text>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.noMessagesText}>
+                      No messages yet. Start a conversation with the homeowner.
+                    </Text>
+                  )}
+                </View>
+                {onSendMessage && (
+                  <View style={styles.chatInputContainer}>
+                    <TextInput
+                      style={styles.chatInput}
+                      value={messageInput}
+                      onChangeText={setMessageInput}
+                      placeholder="Type your message..."
+                      multiline
+                    />
+                    <TouchableOpacity
+                      style={styles.sendButton}
+                      onPress={handleSendMessage}
+                    >
+                      <Text style={styles.sendButtonText}>Send</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             )}
 
