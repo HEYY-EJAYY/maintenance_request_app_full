@@ -1,25 +1,84 @@
-import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { BottomNavigation } from "../../../components/common/BottomNavigation";
+import { notificationService } from "../../../services/notificationService";
 import styles from "./notificationsStyles";
 
 interface NotificationsPageProps {
   onBack: () => void;
   onNavigateToSubmitRequest: () => void;
+  onRefresh?: () => void;
 }
 
 export const NotificationsPage: React.FC<NotificationsPageProps> = ({
   onBack,
   onNavigateToSubmitRequest,
+  onRefresh,
 }) => {
-  const notifications = [
-    { text: "Completed Request", time: "Just now" },
-    { text: "Pending Request", time: "1 hr ago" },
-    { text: "Pending Request", time: "2 hrs ago" },
-    { text: "In progress Request", time: "4 hrs ago" },
-    { text: "Completed Request", time: "1 day ago" },
-    { text: "Completed Request", time: "2 days ago" },
-  ];
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await notificationService.getAll();
+      setNotifications(data);
+      if (onRefresh) onRefresh();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      await notificationService.markAsRead(id);
+      loadNotifications();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to mark as read");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await notificationService.delete(id);
+      loadNotifications();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to delete notification");
+    }
+  };
+
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 0) return "Just now"; // Handle future timestamps
+    if (diff < 60) return "Just now";
+    if (diff < 3600) {
+      const minutes = Math.floor(diff / 60);
+      return `${minutes} ${minutes === 1 ? "min" : "mins"} ago`;
+    }
+    if (diff < 86400) {
+      const hours = Math.floor(diff / 3600);
+      return `${hours} ${hours === 1 ? "hr" : "hrs"} ago`;
+    }
+    if (diff < 604800) {
+      const days = Math.floor(diff / 86400);
+      return `${days} ${days === 1 ? "day" : "days"} ago`;
+    }
+    // For older than a week, show the actual date
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+    });
+  };
 
   return (
     <>
@@ -30,7 +89,14 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
         </TouchableOpacity>
         <View>
           <Text style={styles.notificationTitle}>Notification</Text>
-          <Text style={styles.notificationDate}>Tuesday, January 14, 2025</Text>
+          <Text style={styles.notificationDate}>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
         </View>
       </View>
 
@@ -39,14 +105,51 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
         style={styles.notificationsList}
         contentContainerStyle={{ paddingBottom: 80 }}
       >
-        {notifications.map((notification, index) => (
-          <View key={index} style={styles.notificationCard}>
-            <TouchableOpacity style={styles.notificationItem}>
-              <Text style={styles.notificationText}>{notification.text}</Text>
-              <Text style={styles.notificationTime}>{notification.time}</Text>
-            </TouchableOpacity>
+        {loading ? (
+          <View style={styles.notificationCard}>
+            <Text style={styles.notificationText}>Loading...</Text>
           </View>
-        ))}
+        ) : notifications.length === 0 ? (
+          <View style={styles.notificationCard}>
+            <Text style={styles.notificationText}>No notifications</Text>
+          </View>
+        ) : (
+          notifications.map((notification) => (
+            <View key={notification.id} style={styles.notificationCard}>
+              <TouchableOpacity
+                style={styles.notificationItem}
+                onPress={() => handleMarkAsRead(notification.id)}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[
+                      styles.notificationText,
+                      !notification.is_read && { fontWeight: "bold" },
+                    ]}
+                  >
+                    {notification.title}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
+                    {notification.message}
+                  </Text>
+                </View>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={styles.notificationTime}>
+                    {formatTime(notification.created_at)}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => handleDelete(notification.id)}
+                    style={{ marginTop: 8 }}
+                  >
+                    <Text style={{ color: "#ef4444", fontSize: 12 }}>
+                      Delete
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
 
       {/* Bottom Navigation */}

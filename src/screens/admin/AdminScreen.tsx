@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { authService, User } from "../../services/authService";
 import { messageService } from "../../services/messageService";
+import { notificationService } from "../../services/notificationService";
 import {
   MaintenanceRequest,
   requestService,
@@ -54,10 +55,20 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
   const [allRequests, setAllRequests] = useState<MaintenanceRequest[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   // Fetch user data and requests on mount
   useEffect(() => {
     loadData();
+    loadUnreadNotifications();
+  }, []);
+
+  // Poll for new notifications every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadUnreadNotifications();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const loadData = async () => {
@@ -68,11 +79,22 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
         requestService.getAll(),
       ]);
       setCurrentUser(user);
+      setProfileImage(user?.profile_image || null);
       setAllRequests(requests);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to load data");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUnreadNotifications = async () => {
+    try {
+      const { count } = await notificationService.getUnreadCount();
+      setUnreadNotifications(count);
+    } catch (error) {
+      // Silently fail - don't show alert for background refresh
+      console.error("Failed to load unread notifications:", error);
     }
   };
 
@@ -377,6 +399,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             onNavigateToNotifications={() =>
               setCurrentPage("admin-notifications")
             }
+            onRefresh={loadUnreadNotifications}
           />
         );
 

@@ -108,68 +108,73 @@ export const ChatModal: React.FC<ChatModalProps> = ({
                 </Text>
               </View>
             ) : (
-              messages.map((message) => (
-                <View key={message.id} style={styles.messageGroup}>
+              <>
+                {messages.map((message, index) => (
                   <View
-                    style={[
-                      styles.messageHeader,
-                      message.isAdmin && styles.messageHeaderRight,
-                    ]}
+                    key={`${message.id}-${index}`}
+                    style={styles.messageGroup}
                   >
-                    {!message.isAdmin ? (
-                      <>
-                        <Image
-                          source={{ uri: message.avatar }}
-                          style={styles.messageAvatar}
-                        />
-                        <Text style={styles.messageSender}>
-                          {message.sender}
-                        </Text>
-                      </>
-                    ) : (
-                      <>
-                        <Text style={styles.messageSender}>
-                          {message.sender}
-                        </Text>
-                        <Image
-                          source={{ uri: message.avatar }}
-                          style={styles.messageAvatar}
-                        />
-                      </>
-                    )}
-                  </View>
-                  <View
-                    style={
-                      !message.isAdmin
-                        ? styles.messageLeft
-                        : styles.messageRight
-                    }
-                  >
+                    <View
+                      style={[
+                        styles.messageHeader,
+                        message.isAdmin && styles.messageHeaderRight,
+                      ]}
+                    >
+                      {!message.isAdmin ? (
+                        <>
+                          <Image
+                            source={{ uri: message.avatar }}
+                            style={styles.messageAvatar}
+                          />
+                          <Text style={styles.messageSender}>
+                            {message.sender}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <Text style={styles.messageSender}>
+                            {message.sender}
+                          </Text>
+                          <Image
+                            source={{ uri: message.avatar }}
+                            style={styles.messageAvatar}
+                          />
+                        </>
+                      )}
+                    </View>
                     <View
                       style={
                         !message.isAdmin
-                          ? styles.messageBubbleLeft
-                          : styles.messageBubbleRight
+                          ? styles.messageLeft
+                          : styles.messageRight
                       }
                     >
-                      <Text
+                      <View
                         style={
                           !message.isAdmin
-                            ? styles.messageTextLeft
-                            : styles.messageTextRight
+                            ? styles.messageBubbleLeft
+                            : styles.messageBubbleRight
                         }
                       >
-                        {message.text}
-                      </Text>
+                        <Text
+                          style={
+                            !message.isAdmin
+                              ? styles.messageTextLeft
+                              : styles.messageTextRight
+                          }
+                        >
+                          {message.text}
+                        </Text>
+                      </View>
+                      {message.timestamp && (
+                        <Text style={styles.messageTimestamp}>
+                          {new Date(message.timestamp).toLocaleTimeString()}
+                        </Text>
+                      )}
                     </View>
-                    {message.timestamp && (
-                      <Text style={styles.messageTimestamp}>
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </Text>
-                    )}
                   </View>
-                </View>
-              ))
+                ))}
+              </>
             )}
           </ScrollView>
 

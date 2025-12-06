@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../config/theme";
 import { authService, User } from "../../services/authService";
 import { messageService } from "../../services/messageService";
+import { notificationService } from "../../services/notificationService";
 import { requestService } from "../../services/requestService";
 import { ImageOptionsModal } from "./components/ImageOptionsModal";
 import styles from "./homeownerStyles";
@@ -53,6 +54,7 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
   const [description, setDescription] = useState<string>("");
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   // Available maintenance types
   const maintenanceTypes = [
@@ -70,6 +72,15 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
   // Load user and requests data
   useEffect(() => {
     loadData();
+    loadUnreadNotifications();
+  }, []);
+
+  // Poll for new notifications every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadUnreadNotifications();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // Reload messages when switching to chat page to get updated user profiles
@@ -92,6 +103,16 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
       Alert.alert("Error", error.message || "Failed to load data");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUnreadNotifications = async () => {
+    try {
+      const { count } = await notificationService.getUnreadCount();
+      setUnreadNotifications(count);
+    } catch (error) {
+      // Silently fail - don't show alert for background refresh
+      console.error("Failed to load unread notifications:", error);
     }
   };
 
@@ -252,24 +273,12 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
     if (!messageInput.trim() || !selectedRequest) return;
 
     try {
-      const newMessage = await messageService.create(
-        selectedRequest.id,
-        messageInput
-      );
+      await messageService.create(selectedRequest.id, messageInput);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: newMessage.id,
-          sender: user?.name || "Homeowner",
-          text: newMessage.message,
-          avatar:
-            user?.profile_image ||
-            "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
-          isHomeowner: true,
-        },
-      ]);
       setMessageInput("");
+
+      // Reload messages from server to get updated data
+      await loadMessages(selectedRequest.id);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to send message");
     }
@@ -387,6 +396,7 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
           <NotificationsPage
             onBack={() => setCurrentPage("dashboard")}
             onNavigateToSubmitRequest={() => setCurrentPage("submit-request")}
+            onRefresh={loadUnreadNotifications}
           />
         );
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { BottomNavigation } from "../../../components/common/BottomNavigation";
@@ -39,6 +39,16 @@ export const ChatPage: React.FC<ChatPageProps> = ({
   onMessageInputChange,
   onSendMessage,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (messages.length > 0 && scrollViewRef.current) {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [messages]);
+
   return (
     <>
       {/* Header */}
@@ -51,6 +61,7 @@ export const ChatPage: React.FC<ChatPageProps> = ({
 
       {/* Chat Messages */}
       <ScrollView
+        ref={scrollViewRef}
         style={styles.chatContainer}
         contentContainerStyle={{ paddingBottom: 80 }}
       >
@@ -61,62 +72,66 @@ export const ChatPage: React.FC<ChatPageProps> = ({
             </Text>
           </View>
         ) : (
-          messages.map((message) => (
-            <View key={message.id} style={styles.messageGroup}>
-              <View
-                style={[
-                  styles.messageHeader,
-                  !message.isHomeowner && styles.messageHeaderRight,
-                ]}
-              >
-                {message.isHomeowner ? (
-                  <>
-                    <Image
-                      source={{ uri: message.avatar }}
-                      style={styles.messageAvatar}
-                    />
-                    <Text style={styles.messageSender}>{message.sender}</Text>
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.messageSender}>{message.sender}</Text>
-                    <Image
-                      source={{ uri: message.avatar }}
-                      style={styles.messageAvatar}
-                    />
-                  </>
-                )}
-              </View>
-              <View
-                style={
-                  message.isHomeowner ? styles.messageLeft : styles.messageRight
-                }
-              >
+          <>
+            {messages.map((message, index) => (
+              <View key={`${message.id}-${index}`} style={styles.messageGroup}>
+                <View
+                  style={[
+                    styles.messageHeader,
+                    !message.isHomeowner && styles.messageHeaderRight,
+                  ]}
+                >
+                  {message.isHomeowner ? (
+                    <>
+                      <Image
+                        source={{ uri: message.avatar }}
+                        style={styles.messageAvatar}
+                      />
+                      <Text style={styles.messageSender}>{message.sender}</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.messageSender}>{message.sender}</Text>
+                      <Image
+                        source={{ uri: message.avatar }}
+                        style={styles.messageAvatar}
+                      />
+                    </>
+                  )}
+                </View>
                 <View
                   style={
                     message.isHomeowner
-                      ? styles.messageBubbleLeft
-                      : styles.messageBubbleRight
+                      ? styles.messageLeft
+                      : styles.messageRight
                   }
                 >
-                  <Text
+                  <View
                     style={
                       message.isHomeowner
-                        ? styles.messageTextLeft
-                        : styles.messageTextRight
+                        ? styles.messageBubbleLeft
+                        : styles.messageBubbleRight
                     }
                   >
-                    {message.text}
-                  </Text>
+                    <Text
+                      style={
+                        message.isHomeowner
+                          ? styles.messageTextLeft
+                          : styles.messageTextRight
+                      }
+                    >
+                      {message.text}
+                    </Text>
+                  </View>
+                  {message.timestamp && (
+                    <Text style={styles.messageTimestamp}>
+                      {message.timestamp}
+                    </Text>
+                  )}
                 </View>
-                {message.timestamp && (
-                  <Text style={styles.messageTimestamp}>
-                    {message.timestamp}
-                  </Text>
-                )}
               </View>
-            </View>
-          ))
+            ))}
+          </>
         )}
       </ScrollView>
 

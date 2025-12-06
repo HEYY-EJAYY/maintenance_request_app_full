@@ -17,6 +17,7 @@ interface NotificationsPageProps {
   onNavigateToTasks: () => void;
   onNavigateToHome: () => void;
   onNavigateToNotifications: () => void;
+  onRefresh?: () => void;
 }
 
 export const NotificationsPage: React.FC<NotificationsPageProps> = ({
@@ -24,6 +25,7 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
   onNavigateToTasks,
   onNavigateToHome,
   onNavigateToNotifications,
+  onRefresh,
 }) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,7 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
       setLoading(true);
       const data = await notificationService.getAll();
       setNotifications(data);
+      if (onRefresh) onRefresh();
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to load notifications");
     } finally {
@@ -67,12 +70,26 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
 
+    if (diff < 0) return "Just now"; // Handle future timestamps
     if (diff < 60) return "Just now";
-    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
-    return `${Math.floor(diff / 86400)} day${
-      Math.floor(diff / 86400) > 1 ? "s" : ""
-    } ago`;
+    if (diff < 3600) {
+      const minutes = Math.floor(diff / 60);
+      return `${minutes} ${minutes === 1 ? "min" : "mins"} ago`;
+    }
+    if (diff < 86400) {
+      const hours = Math.floor(diff / 3600);
+      return `${hours} ${hours === 1 ? "hr" : "hrs"} ago`;
+    }
+    if (diff < 604800) {
+      const days = Math.floor(diff / 86400);
+      return `${days} ${days === 1 ? "day" : "days"} ago`;
+    }
+    // For older than a week, show the actual date
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+    });
   };
 
   return (

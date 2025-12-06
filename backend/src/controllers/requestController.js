@@ -21,8 +21,17 @@ const requestController = {
         status: "pending",
       });
 
-      // Create notification for admins (simplified - in production, notify all admins)
-      // This would need improvement to notify all admin users
+      // Create notification for all admins
+      const db = require("../database/connection");
+      const admins = await db.all("SELECT id FROM users WHERE role = 'admin'");
+      for (const admin of admins) {
+        await Notification.create({
+          user_id: admin.id,
+          type: "new_request",
+          title: "New Maintenance Request",
+          message: `New ${type} request from unit ${unit || "N/A"}`,
+        });
+      }
 
       res.status(201).json(request);
     } catch (error) {
@@ -101,12 +110,38 @@ const requestController = {
 
       const updatedRequest = await Request.update(req.params.id, updateData);
 
-      // Create notification for homeowner
+      // Create notification for homeowner based on what changed
+      let notificationMessage = `Your ${request.type} request has been updated`;
+      let notificationTitle = "Request Updated";
+
+      if (req.body.status) {
+        switch (req.body.status) {
+          case "in-progress":
+            notificationTitle = "Request In Progress";
+            notificationMessage = `Your ${request.type} request is now being worked on`;
+            break;
+          case "completed":
+            notificationTitle = "Request Completed";
+            notificationMessage = `Your ${request.type} request has been completed`;
+            break;
+          case "pending":
+            notificationTitle = "Request Pending";
+            notificationMessage = `Your ${request.type} request is pending review`;
+            break;
+        }
+      } else if (req.body.assigned_technician) {
+        notificationTitle = "Technician Assigned";
+        notificationMessage = `Technician ${req.body.assigned_technician} assigned to your ${request.type} request`;
+      } else if (req.body.priority) {
+        notificationTitle = "Priority Updated";
+        notificationMessage = `Your ${request.type} request priority changed to ${req.body.priority}`;
+      }
+
       await Notification.create({
         user_id: request.user_id,
         type: "request_update",
-        title: "Request Updated",
-        message: `Your ${request.type} request has been updated`,
+        title: notificationTitle,
+        message: notificationMessage,
       });
 
       res.json(updatedRequest);
