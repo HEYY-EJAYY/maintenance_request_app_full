@@ -105,9 +105,15 @@ const authController = {
 
   async updateProfile(req, res, next) {
     try {
-      const { name, phone, address, position, community } = req.body;
+      const { name, phone, address, position, community, profile_image } =
+        req.body;
 
       const updateData = { name, phone };
+
+      // Handle profile_image (can be string or null)
+      if (profile_image !== undefined) {
+        updateData.profile_image = profile_image;
+      }
 
       if (req.user.role === "homeowner") {
         updateData.address = address;
