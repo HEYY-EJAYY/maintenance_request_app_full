@@ -147,10 +147,24 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
         )
       : 0;
 
-  // Calculate weekly chart data (last 8 days)
-  const weeklyChartData = Array.from({ length: 8 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (7 - i));
+  // Calculate weekly chart data (current week: Monday to Sunday/Today)
+  const getStartOfWeek = () => {
+    const today = new Date();
+    const day = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const diff = day === 0 ? -6 : 1 - day; // Adjust when day is Sunday
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  };
+
+  const startOfWeek = getStartOfWeek();
+  const today = new Date();
+  const daysToShow = Math.min(today.getDay() === 0 ? 7 : today.getDay(), 7); // Show up to today
+
+  const weeklyChartData = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
     const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
 
     const startOfDay = new Date(date);
@@ -158,17 +172,24 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const completed = allRequests.filter((req) => {
-      if (req.status !== "completed") return false;
-      const updatedDate = new Date(req.updated_at || req.created_at);
-      return updatedDate >= startOfDay && updatedDate <= endOfDay;
-    }).length;
+    // Only show data for days up to today
+    const isFutureDay = date > today;
 
-    const pending = allRequests.filter((req) => {
-      if (req.status !== "pending") return false;
-      const createdDate = new Date(req.created_at);
-      return createdDate >= startOfDay && createdDate <= endOfDay;
-    }).length;
+    const completed = isFutureDay
+      ? 0
+      : allRequests.filter((req) => {
+          if (req.status !== "completed" || !req.completed_date) return false;
+          const completedDate = new Date(req.completed_date);
+          return completedDate >= startOfDay && completedDate <= endOfDay;
+        }).length;
+
+    const pending = isFutureDay
+      ? 0
+      : allRequests.filter((req) => {
+          if (req.status !== "pending") return false;
+          const createdDate = new Date(req.created_at);
+          return createdDate >= startOfDay && createdDate <= endOfDay;
+        }).length;
 
     return { day: dayName, completed, pending };
   });

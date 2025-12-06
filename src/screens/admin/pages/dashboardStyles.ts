@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#6b7280",
   },
+  // FIXED: Chart section styles
   chartSection: {
     backgroundColor: "white",
     margin: 16,
@@ -146,15 +147,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   chartContainer: {
+    backgroundColor: "#f9fafb",
+    borderRadius: 8,
+    padding: 20,
     alignItems: "center",
+    minHeight: 220, // Ensure enough height
   },
   chart: {
-    marginBottom: 16,
+    marginVertical: 10,
+    alignSelf: "center",
   },
   chartLegend: {
     flexDirection: "row",
     justifyContent: "center",
     gap: 20,
+    marginTop: 20,
   },
   legendItem: {
     flexDirection: "row",
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 12,
     color: "#6b7280",
+    fontWeight: "500",
   },
   performanceSection: {
     backgroundColor: "white",

@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
+import Svg, { Circle, Line, Polyline, Text as SvgText } from "react-native-svg";
 import { BottomNavigation } from "../../../components/common/BottomNavigation";
 import styles from "./dashboardStyles";
 
@@ -86,10 +86,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       1
     );
     const scale = 120 / maxValue; // Max height of 120px
+    const chartWidth = 250; // Total width for points
+    const spacing = chartWidth / (weeklyChartData.length - 1); // Spacing between points
 
     return data
       .map((value, index) => {
-        const x = 40 + index * 30; // 30px spacing between points
+        const x = 40 + index * spacing; // Dynamic spacing between points
         const y = 140 - value * scale; // Invert Y axis
         return `${x},${y}`;
       })
@@ -104,7 +106,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     ...weeklyChartData.map((d) => Math.max(d.completed, d.pending)),
     1
   );
-  const yStep = Math.ceil(maxValue / 3);
+  // Ensure we have at least 3 steps for better scale
+  const yStep = maxValue <= 3 ? 1 : Math.ceil(maxValue / 3);
+
+  // Parse points for rendering circles
+  const parsePoints = (pointsStr: string) => {
+    return pointsStr.split(" ").map((point) => {
+      const [x, y] = point.split(",").map(Number);
+      return { x, y };
+    });
+  };
+
+  const completedCircles = parsePoints(completedPoints);
+  const pendingCircles = parsePoints(pendingPoints);
   return (
     <SafeAreaView style={styles.dashboardContainer}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -243,92 +257,189 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <View style={styles.chartSection}>
           <Text style={styles.chartTitle}>Weekly Progress</Text>
           <View style={styles.chartContainer}>
-            <Svg width={300} height={180} style={styles.chart}>
-              {/* Grid lines */}
-              <Line
-                x1="30"
-                y1="140"
-                x2="280"
-                y2="140"
-                stroke="#e5e7eb"
-                strokeWidth="1"
-              />
-              <Line
-                x1="30"
-                y1="110"
-                x2="280"
-                y2="110"
-                stroke="#e5e7eb"
-                strokeWidth="1"
-              />
-              <Line
-                x1="30"
-                y1="80"
-                x2="280"
-                y2="80"
-                stroke="#e5e7eb"
-                strokeWidth="1"
-              />
-              <Line
-                x1="30"
-                y1="50"
-                x2="280"
-                y2="50"
-                stroke="#e5e7eb"
-                strokeWidth="1"
-              />
-              <Line
-                x1="30"
-                y1="20"
-                x2="280"
-                y2="20"
-                stroke="#e5e7eb"
-                strokeWidth="1"
-              />
+            <Svg width={300} height={200} style={styles.chart}>
+              {(() => {
+                // Fixed Y-axis scale: 0, 3, 6, 9
+                const ySteps = [0, 3, 6, 9];
+                const maxYValue = 9; // Fixed maximum value
 
-              {/* Y-axis labels */}
-              <SvgText x="20" y="145" fontSize="10" fill="#999">
-                0
-              </SvgText>
-              <SvgText x="20" y="115" fontSize="10" fill="#999">
-                {yStep}
-              </SvgText>
-              <SvgText x="20" y="85" fontSize="10" fill="#999">
-                {yStep * 2}
-              </SvgText>
-              <SvgText x="20" y="55" fontSize="10" fill="#999">
-                {yStep * 3}
-              </SvgText>
+                // Chart dimensions
+                const chartHeight = 140; // Height for data area
+                const chartWidth = 240; // Width for data area
+                const margin = {
+                  top: 20,
+                  right: 20,
+                  bottom: 40,
+                  left: 40,
+                };
 
-              {/* Completed line (green) */}
-              <Polyline
-                points={completedPoints}
-                fill="none"
-                stroke="#86efac"
-                strokeWidth="2"
-              />
+                // Calculate scaling - fixed to max value of 9
+                const scaleY = chartHeight / maxYValue;
+                const spacing = chartWidth / (weeklyChartData.length - 1);
 
-              {/* Pending line (orange) */}
-              <Polyline
-                points={pendingPoints}
-                fill="none"
-                stroke="#fbbf24"
-                strokeWidth="2"
-              />
+                // Helper to get Y coordinate
+                const getY = (value: number) => {
+                  const scaledValue = Math.min(value, maxYValue); // Cap at max value
+                  return margin.top + chartHeight - scaledValue * scaleY;
+                };
 
-              {/* X-axis labels */}
-              {weeklyChartData.map((item, index) => (
-                <SvgText
-                  key={index}
-                  x={35 + index * 30}
-                  y="160"
-                  fontSize="9"
-                  fill="#666"
-                >
-                  {item.day}
-                </SvgText>
-              ))}
+                // Helper to get X coordinate
+                const getX = (index: number) => {
+                  return margin.left + index * spacing;
+                };
+
+                // Generate points for lines
+                const getLinePoints = (data: number[]) => {
+                  return data
+                    .map((value, index) => {
+                      const x = getX(index);
+                      const y = getY(value);
+                      return `${x},${y}`;
+                    })
+                    .join(" ");
+                };
+
+                const completedPoints = getLinePoints(
+                  weeklyChartData.map((d) => d.completed)
+                );
+                const pendingPoints = getLinePoints(
+                  weeklyChartData.map((d) => d.pending)
+                );
+
+                // Generate circles data
+                const getCircles = (data: number[]) => {
+                  return data.map((value, index) => ({
+                    x: getX(index),
+                    y: getY(value),
+                    value: value,
+                  }));
+                };
+
+                const completedCircles = getCircles(
+                  weeklyChartData.map((d) => d.completed)
+                );
+                const pendingCircles = getCircles(
+                  weeklyChartData.map((d) => d.pending)
+                );
+
+                return (
+                  <>
+                    {/* Horizontal grid lines only - no vertical grid lines */}
+                    {ySteps.map((stepValue, index) => {
+                      const y = getY(stepValue);
+                      return (
+                        <React.Fragment key={`h-grid-${index}`}>
+                          <Line
+                            x1={margin.left}
+                            y1={y}
+                            x2={margin.left + chartWidth}
+                            y2={y}
+                            stroke="#e5e7eb"
+                            strokeWidth="1"
+                          />
+                          {/* Y-axis labels - fixed at 0, 3, 6, 9 */}
+                          <SvgText
+                            x={margin.left - 5}
+                            y={y + 4}
+                            fontSize="10"
+                            fill="#999"
+                            textAnchor="end"
+                          >
+                            {stepValue}
+                          </SvgText>
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {/* Completed line (green) */}
+                    <Polyline
+                      points={completedPoints}
+                      fill="none"
+                      stroke="#86efac"
+                      strokeWidth="2"
+                    />
+
+                    {/* Pending line (orange) */}
+                    <Polyline
+                      points={pendingPoints}
+                      fill="none"
+                      stroke="#fbbf24"
+                      strokeWidth="2"
+                    />
+
+                    {/* Completed data points */}
+                    {completedCircles.map((circle, index) => (
+                      <React.Fragment key={`completed-${index}`}>
+                        <Circle
+                          cx={circle.x}
+                          cy={circle.y}
+                          r="4"
+                          fill="#22c55e"
+                          stroke="#fff"
+                          strokeWidth="2"
+                        />
+                        {circle.value > 0 && (
+                          <SvgText
+                            x={circle.x}
+                            y={circle.y - 10}
+                            fontSize="10"
+                            fill="#22c55e"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                          >
+                            {circle.value}
+                          </SvgText>
+                        )}
+                      </React.Fragment>
+                    ))}
+
+                    {/* Pending data points */}
+                    {pendingCircles.map((circle, index) => (
+                      <React.Fragment key={`pending-${index}`}>
+                        <Circle
+                          cx={circle.x}
+                          cy={circle.y}
+                          r="4"
+                          fill="#f59e0b"
+                          stroke="#fff"
+                          strokeWidth="2"
+                        />
+                        {circle.value > 0 && (
+                          <SvgText
+                            x={circle.x}
+                            y={circle.y - 10}
+                            fontSize="10"
+                            fill="#f59e0b"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                          >
+                            {circle.value}
+                          </SvgText>
+                        )}
+                      </React.Fragment>
+                    ))}
+
+                    {/* X-axis labels */}
+                    {weeklyChartData.map((item, index) => {
+                      const x = getX(index);
+                      return (
+                        <SvgText
+                          key={index}
+                          x={x}
+                          y={margin.top + chartHeight + 20}
+                          fontSize="10"
+                          fill="#666"
+                          textAnchor="middle"
+                        >
+                          {item.day}
+                        </SvgText>
+                      );
+                    })}
+                  </>
+                );
+              })()}
             </Svg>
+
             {/* Legend */}
             <View style={styles.chartLegend}>
               <View style={styles.legendItem}>
