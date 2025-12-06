@@ -4,8 +4,8 @@ class Message {
   static async create({ request_id, sender, message }) {
     const result = await db.run(
       `
-      INSERT INTO messages (request_id, sender, message)
-      VALUES (?, ?, ?)
+      INSERT INTO messages (request_id, sender, message, created_at)
+      VALUES (?, ?, ?, datetime('now', 'localtime'))
     `,
       [request_id, sender, message]
     );

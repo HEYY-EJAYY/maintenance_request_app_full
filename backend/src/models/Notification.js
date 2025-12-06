@@ -4,8 +4,8 @@ class Notification {
   static async create({ user_id, type, title, message }) {
     const result = await db.run(
       `
-      INSERT INTO notifications (user_id, type, title, message)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO notifications (user_id, type, title, message, created_at)
+      VALUES (?, ?, ?, ?, datetime('now', 'localtime'))
     `,
       [user_id, type, title, message]
     );

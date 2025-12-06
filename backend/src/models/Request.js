@@ -14,8 +14,8 @@ class Request {
     await db.run(
       `
       INSERT INTO maintenance_requests (
-        id, user_id, type, description, unit, address, priority, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        id, user_id, type, description, unit, address, priority, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
     `,
       [id, user_id, type, description, unit, address, priority, status]
     );
