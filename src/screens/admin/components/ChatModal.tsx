@@ -58,11 +58,11 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     if (diff < 60) return "Just now";
     if (diff < 3600) {
       const minutes = Math.floor(diff / 60);
-      return `${minutes} ${minutes === 1 ? 'min' : 'mins'} ago`;
+      return `${minutes} ${minutes === 1 ? "min" : "mins"} ago`;
     }
     if (diff < 86400) {
       const hours = Math.floor(diff / 3600);
-      return `${hours} ${hours === 1 ? 'hr' : 'hrs'} ago`;
+      return `${hours} ${hours === 1 ? "hr" : "hrs"} ago`;
     }
     // For older messages, show date and time
     return date.toLocaleString("en-US", {

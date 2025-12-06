@@ -50,6 +50,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
   const [completionNotes, setCompletionNotes] = useState("");
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<number>(3); // Days
 
   // State for data from backend
   const [allRequests, setAllRequests] = useState<MaintenanceRequest[]>([]);
@@ -106,6 +107,14 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
   const completedRequests = allRequests.filter(
     (req) => req.status === "completed"
   );
+
+  // Calculate requests from selected date range
+  const daysAgo = new Date();
+  daysAgo.setDate(daysAgo.getDate() - selectedDateRange);
+  const recentRequests = allRequests.filter((req) => {
+    const requestDate = new Date(req.created_at);
+    return requestDate >= daysAgo;
+  });
 
   // Helper functions
   const getStatusStyle = (status: string) => {
@@ -425,6 +434,9 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
         return (
           <DashboardPage
             allRequests={allRequests}
+            recentRequests={recentRequests}
+            selectedDateRange={selectedDateRange}
+            onDateRangeChange={setSelectedDateRange}
             pendingRequests={pendingRequests}
             inProgressRequests={inProgressRequests}
             completedRequests={completedRequests}

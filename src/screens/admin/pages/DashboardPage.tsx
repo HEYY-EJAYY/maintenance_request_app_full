@@ -19,6 +19,9 @@ interface DashboardPageProps {
   profileImage: string | null;
   currentUser: User | null;
   allRequests: any[];
+  recentRequests: any[];
+  selectedDateRange: number;
+  onDateRangeChange: (days: number) => void;
   pendingRequests: any[];
   completedRequests: any[];
   inProgressRequests: any[];
@@ -37,6 +40,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   profileImage,
   currentUser,
   allRequests,
+  recentRequests,
+  selectedDateRange,
+  onDateRangeChange,
   pendingRequests,
   completedRequests,
   inProgressRequests,
@@ -50,6 +56,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   onNavigateToHome,
   onNavigateToNotifications,
 }) => {
+  const getDateRangeText = () => {
+    if (selectedDateRange === 1) return "Today";
+    if (selectedDateRange === 7) return "Last 7 days";
+    if (selectedDateRange === 30) return "Last 30 days";
+    return `Last ${selectedDateRange} days`;
+  };
   return (
     <SafeAreaView style={styles.dashboardContainer}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -93,14 +105,60 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
               {/* Stats Grid - 4 cards in 2x2 layout */}
               <View style={styles.statsGrid}>
-                <TouchableOpacity
+                <View
                   style={[styles.statCard, { backgroundColor: "#93c5fd" }]}
-                  onPress={onShowAllRequests}
                 >
-                  <Text style={styles.statNumber}>{allRequests.length}</Text>
-                  <Text style={styles.statLabel}>Total Requests</Text>
-                  <Text style={styles.statSubtext}>Last 3 days</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={onShowAllRequests}>
+                    <Text style={styles.statNumber}>{recentRequests.length}</Text>
+                    <Text style={styles.statLabel}>Total Requests</Text>
+                  </TouchableOpacity>
+                  <View style={{ flexDirection: "row", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+                    <TouchableOpacity
+                      onPress={() => onDateRangeChange(1)}
+                      style={{
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        borderRadius: 8,
+                        backgroundColor: selectedDateRange === 1 ? "#1e3a8a" : "transparent",
+                      }}
+                    >
+                      <Text style={{ fontSize: 9, color: selectedDateRange === 1 ? "#fff" : "#1e3a8a" }}>1d</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => onDateRangeChange(3)}
+                      style={{
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        borderRadius: 8,
+                        backgroundColor: selectedDateRange === 3 ? "#1e3a8a" : "transparent",
+                      }}
+                    >
+                      <Text style={{ fontSize: 9, color: selectedDateRange === 3 ? "#fff" : "#1e3a8a" }}>3d</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => onDateRangeChange(7)}
+                      style={{
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        borderRadius: 8,
+                        backgroundColor: selectedDateRange === 7 ? "#1e3a8a" : "transparent",
+                      }}
+                    >
+                      <Text style={{ fontSize: 9, color: selectedDateRange === 7 ? "#fff" : "#1e3a8a" }}>7d</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => onDateRangeChange(30)}
+                      style={{
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        borderRadius: 8,
+                        backgroundColor: selectedDateRange === 30 ? "#1e3a8a" : "transparent",
+                      }}
+                    >
+                      <Text style={{ fontSize: 9, color: selectedDateRange === 30 ? "#fff" : "#1e3a8a" }}>30d</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
                 <TouchableOpacity
                   style={[styles.statCard, { backgroundColor: "#fbbf24" }]}
