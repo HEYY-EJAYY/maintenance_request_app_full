@@ -83,9 +83,7 @@ export const RequestDetailPage: React.FC<RequestDetailPageProps> = ({
 
             <View style={styles.detailSection}>
               <Text style={styles.detailTitle}>Request ID</Text>
-              <Text style={styles.detailValue}>
-                {request.id || "N/A"}
-              </Text>
+              <Text style={styles.detailValue}>{request.id || "N/A"}</Text>
             </View>
 
             <View style={styles.detailDivider} />
@@ -111,8 +109,21 @@ export const RequestDetailPage: React.FC<RequestDetailPageProps> = ({
             <View style={styles.detailSection}>
               <Text style={styles.detailTitle}>Status</Text>
               <View style={styles.statusRow}>
-                <View style={[styles.statusDot, { backgroundColor: getStatusStyle(request.status).backgroundColor }]} />
-                <Text style={[styles.statusText, { color: getStatusStyle(request.status).color }]}>
+                <View
+                  style={[
+                    styles.statusDot,
+                    {
+                      backgroundColor: getStatusStyle(request.status)
+                        .backgroundColor,
+                    },
+                  ]}
+                />
+                <Text
+                  style={[
+                    styles.statusText,
+                    { color: getStatusStyle(request.status).color },
+                  ]}
+                >
                   {getStatusText(request.status)}
                 </Text>
               </View>
@@ -135,9 +146,7 @@ export const RequestDetailPage: React.FC<RequestDetailPageProps> = ({
                 <View style={styles.detailDivider} />
                 <View style={styles.detailSection}>
                   <Text style={styles.detailTitle}>Priority</Text>
-                  <Text style={styles.detailValue}>
-                    {request.priority}
-                  </Text>
+                  <Text style={styles.detailValue}>{request.priority}</Text>
                 </View>
               </>
             )}

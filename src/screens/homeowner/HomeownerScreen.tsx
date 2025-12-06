@@ -246,10 +246,10 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
     if (!messageInput.trim() || !selectedRequest) return;
 
     try {
-      const newMessage = await messageService.create({
-        request_id: selectedRequest.id,
-        message: messageInput,
-      });
+      const newMessage = await messageService.create(
+        selectedRequest.id.toString(),
+        messageInput
+      );
 
       setMessages((prev) => [
         ...prev,
@@ -272,7 +272,7 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
   // Load messages for a request
   const loadMessages = async (requestId: number) => {
     try {
-      const messagesData = await messageService.getByRequestId(requestId);
+      const messagesData = await messageService.getByRequestId(requestId.toString());
       const formattedMessages = messagesData.map((msg: any) => ({
         id: msg.id,
         sender: msg.sender_name,
