@@ -293,15 +293,6 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
     }
   };
 
-  // Computed states
-  const pendingRequests = allRequests.filter((req) => req.status === "pending");
-  const inProgressRequests = allRequests.filter(
-    (req) => req.status === "in-progress"
-  );
-  const completedRequests = allRequests.filter(
-    (req) => req.status === "completed"
-  );
-
   // Render appropriate page based on currentPage state
   const renderPage = () => {
     switch (currentPage) {
