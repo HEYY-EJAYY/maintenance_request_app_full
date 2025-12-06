@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Alert,
   ScrollView,
   StatusBar,
   Text,
@@ -8,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomNavigation } from "../../../components/common/BottomNavigation";
+import { notificationService } from "../../../services/notificationService";
 import styles from "./notificationsStyles";
 
 interface NotificationsPageProps {
@@ -23,6 +25,54 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
   onNavigateToHome,
   onNavigateToNotifications,
 }) => {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await notificationService.getAll();
+      setNotifications(data);
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      await notificationService.markAsRead(id);
+      loadNotifications();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to mark as read");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await notificationService.delete(id);
+      loadNotifications();
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to delete notification");
+    }
+  };
+
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
+    return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? "s" : ""} ago`;
+  };
+
   return (
     <SafeAreaView style={styles.dashboardContainer}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -33,7 +83,14 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
         </TouchableOpacity>
         <View style={styles.adminNotificationHeaderContent}>
           <Text style={styles.notificationTitle}>Notifications</Text>
-          <Text style={styles.notificationDate}>Tuesday, January 14, 2025</Text>
+          <Text style={styles.notificationDate}>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
         </View>
       </View>
 
@@ -41,47 +98,34 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
         style={styles.adminNotificationsList}
         contentContainerStyle={{ paddingBottom: 80 }}
       >
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            New maintenance request submitted for Unit 12A
-          </Text>
-          <Text style={styles.notificationTime}>Just now</Text>
-        </View>
-
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            Request REQ-2025-0003 has been completed
-          </Text>
-          <Text style={styles.notificationTime}>1 hr ago</Text>
-        </View>
-
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            Technician assigned to plumbing issue in Unit 7C
-          </Text>
-          <Text style={styles.notificationTime}>2 hrs ago</Text>
-        </View>
-
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            High priority request requires attention in Unit 9B
-          </Text>
-          <Text style={styles.notificationTime}>4 hrs ago</Text>
-        </View>
-
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            Weekly maintenance report is ready
-          </Text>
-          <Text style={styles.notificationTime}>1 day ago</Text>
-        </View>
-
-        <View style={styles.adminNotificationCard}>
-          <Text style={styles.adminNotificationText}>
-            System maintenance scheduled for tomorrow
-          </Text>
-          <Text style={styles.notificationTime}>2 days ago</Text>
-        </View>
+        {loading ? (
+          <View style={styles.adminNotificationCard}>
+            <Text style={styles.adminNotificationText}>Loading notifications...</Text>
+          </View>
+        ) : notifications.length === 0 ? (
+          <View style={styles.adminNotificationCard}>
+            <Text style={styles.adminNotificationText}>No notifications</Text>
+          </View>
+        ) : (
+          notifications.map((notification) => (
+            <TouchableOpacity
+              key={notification.id}
+              style={[
+                styles.adminNotificationCard,
+                !notification.is_read && { backgroundColor: "#E6F4FE" },
+              ]}
+              onPress={() => handleMarkAsRead(notification.id)}
+              onLongPress={() => handleDelete(notification.id)}
+            >
+              <Text style={styles.adminNotificationText}>
+                {notification.message}
+              </Text>
+              <Text style={styles.notificationTime}>
+                {formatTime(notification.created_at)}
+              </Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
 
       {/* Bottom Navigation */}

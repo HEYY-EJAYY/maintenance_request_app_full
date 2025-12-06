@@ -13,8 +13,11 @@ import Svg, { Line, Polyline, Text as SvgText } from "react-native-svg";
 import { BottomNavigation } from "../../../components/common/BottomNavigation";
 import styles from "./dashboardStyles";
 
+import { User } from "../../../services/authService";
+
 interface DashboardPageProps {
   profileImage: string | null;
+  currentUser: User | null;
   allRequests: any[];
   pendingRequests: any[];
   completedRequests: any[];
@@ -32,6 +35,7 @@ interface DashboardPageProps {
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({
   profileImage,
+  currentUser,
   allRequests,
   pendingRequests,
   completedRequests,
@@ -53,8 +57,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       <View style={styles.adminHeader}>
         <View style={styles.adminHeaderText}>
           <Text style={styles.welcomeBack}>Welcome back,</Text>
-          <Text style={styles.adminName}>Admin Rica!</Text>
-          <Text style={styles.dateText}>Tuesday, January 14, 2025</Text>
+          <Text style={styles.adminName}>{currentUser?.name || "Admin"}!</Text>
+          <Text style={styles.dateText}>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
         </View>
         <TouchableOpacity style={styles.profilePic} onPress={onProfilePress}>
           <Image source={getProfileImageSource()} style={styles.profileImage} />

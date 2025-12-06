@@ -355,6 +355,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onLogout }) => {
             inProgressRequests={inProgressRequests}
             completedRequests={completedRequests}
             profileImage={profileImage}
+            currentUser={currentUser}
             getProfileImageSource={getProfileImageSource}
             onProfilePress={() => setCurrentPage("admin-profile")}
             onShowAllRequests={() => setShowRequestsModal(true)}

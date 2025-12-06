@@ -4,8 +4,8 @@ import { Alert, Platform, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../config/theme";
 import { authService, User } from "../../services/authService";
-import { requestService } from "../../services/requestService";
 import { messageService } from "../../services/messageService";
+import { requestService } from "../../services/requestService";
 import { ImageOptionsModal } from "./components/ImageOptionsModal";
 import styles from "./homeownerStyles";
 import { ChatPage } from "./pages/ChatPage";
@@ -139,7 +139,9 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
       const newImageUri = result.assets[0].uri;
       try {
         await authService.updateProfile({ profile_image: newImageUri });
-        setUser((prev) => prev ? { ...prev, profile_image: newImageUri } : null);
+        setUser((prev) =>
+          prev ? { ...prev, profile_image: newImageUri } : null
+        );
         setShowImageOptions(false);
         Alert.alert("Success", "Profile image updated");
       } catch (error: any) {
@@ -170,7 +172,9 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
       const newImageUri = result.assets[0].uri;
       try {
         await authService.updateProfile({ profile_image: newImageUri });
-        setUser((prev) => prev ? { ...prev, profile_image: newImageUri } : null);
+        setUser((prev) =>
+          prev ? { ...prev, profile_image: newImageUri } : null
+        );
         setShowImageOptions(false);
         Alert.alert("Success", "Profile image updated");
       } catch (error: any) {
@@ -182,7 +186,7 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
   const handleRemovePhoto = async () => {
     try {
       await authService.updateProfile({ profile_image: null });
-      setUser((prev) => prev ? { ...prev, profile_image: null } : null);
+      setUser((prev) => (prev ? { ...prev, profile_image: null } : null));
       setShowImageOptions(false);
       Alert.alert("Success", "Profile image removed");
     } catch (error: any) {
@@ -253,7 +257,9 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
           id: newMessage.id,
           sender: user?.name || "Homeowner",
           text: newMessage.message,
-          avatar: user?.profile_image || "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
+          avatar:
+            user?.profile_image ||
+            "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
           isHomeowner: true,
         },
       ]);
@@ -271,7 +277,9 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
         id: msg.id,
         sender: msg.sender_name,
         text: msg.message,
-        avatar: msg.sender_avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
+        avatar:
+          msg.sender_avatar ||
+          "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
         isHomeowner: msg.sender_role === "homeowner",
         timestamp: msg.created_at,
       }));
@@ -384,10 +392,13 @@ export const HomeownerApp: React.FC<HomeownerAppProps> = ({ onLogout }) => {
             onUpdateProfile={async (updates) => {
               try {
                 await authService.updateProfile(updates);
-                setUser((prev) => prev ? { ...prev, ...updates } : null);
+                setUser((prev) => (prev ? { ...prev, ...updates } : null));
                 Alert.alert("Success", "Profile updated successfully");
               } catch (error: any) {
-                Alert.alert("Error", error.message || "Failed to update profile");
+                Alert.alert(
+                  "Error",
+                  error.message || "Failed to update profile"
+                );
               }
             }}
             onLogout={onLogout}
